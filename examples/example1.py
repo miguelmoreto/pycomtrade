@@ -25,8 +25,8 @@
 # Federal University of Santa Catarina
 # Brazil - 2010
 #
-__version__ = "$Revision: 178 $" # SVN revision.
-__date__ = "$Date: 2010-03-11 12:36:46 -0300 (qui, 11 mar 2010) $" # Date of the last SVN revision.
+__version__ = "$Revision$" # SVN revision.
+__date__ = "$Date$" # Date of the last SVN revision.
 import pyComtrade
 
 comtradeObj = pyComtrade.ComtradeRecord() # Create an instance of the ComtradeRecord class.
