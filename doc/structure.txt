@@ -1,0 +1,15 @@
+pyComtrade by Miguel Moreto
+
+Copyright (c) 2010 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
+
+
+
+Definition of the module structure.
+
+Although pyComtrade is starting as a pure python module, I am using a package structure in order
+to enable future submodules do be added. These submodules can be, for exemple, phasor estimation
+algorithms and other processing routines.
+
+\pyComtrade                 Top-level package.
+    __init__.py             Initialize the pyComtrade package.
+    pyComtrade.py           Main module file.
