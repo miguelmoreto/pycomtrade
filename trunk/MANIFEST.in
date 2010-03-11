@@ -2,4 +2,4 @@ include setup.py
 include README.txt COPYING.txt
 include MANIFEST.in
 
-recursive-include examples *.*
+recursive-include examples *.py *.cfg *.dat *.inf
