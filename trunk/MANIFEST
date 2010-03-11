@@ -1,0 +1,10 @@
+COPYING.txt
+MANIFEST.in
+README.txt
+setup.py
+examples\test_data\test1.CFG
+examples\test_data\test1.DAT
+examples\test_data\test1.HDR
+examples\test_data\test1.inf
+pyComtrade\__init__.py
+pyComtrade\pyComtrade.py
