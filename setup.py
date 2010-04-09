@@ -29,5 +29,5 @@ setup(name='pyComtrade',
         maintainer_email='moreto@ieee.org',
         url='http://code.google.com/p/pycomtrade/',
         license='GPLv3',
-        packages=['pyComtrade'],
+        packages=['src'],
         )
