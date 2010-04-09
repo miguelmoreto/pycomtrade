@@ -117,7 +117,7 @@ class ComtradeRecord:
         self.D = int(templist[2].strip('D'))
 
         # Processing analog channel lines:
-        for i in range(self.A):
+        for i in range(self.A): #@UnusedVariable
             line = self.filehandler.readline()
             templist = line.split(',')
             self.An.append(int(templist[0]))
@@ -135,7 +135,7 @@ class ComtradeRecord:
             self.PS.append(templist[12])
 
         # Processing digital channel lines:
-        for i in range(self.D):
+        for i in range(self.D): #@UnusedVariable
             line = self.filehandler.readline()
             templist = line.split(',')
             self.Dn.append(int(templist[0]))
@@ -149,7 +149,7 @@ class ComtradeRecord:
 
         # Read sampling rates:
         self.nrates = int(self.filehandler.readline()) # nrates.
-        for i in range(self.nrates):
+        for i in range(self.nrates): #@UnusedVariable
             line = self.filehandler.readline()
             templist = line.split(',')
             self.samp.append(int(templist[0]))
