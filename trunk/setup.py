@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#Copyright (c) 2010 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
+#Copyright (c) 2013 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
 
 #This file is part of pyComtrade.
 #
@@ -29,5 +29,6 @@ setup(name='pyComtrade',
         maintainer_email='moreto@ieee.org',
         url='http://code.google.com/p/pycomtrade/',
         license='GPLv3',
-        packages=['src'],
+        packages=['pyComtrade'],
+        package_dir={ 'pyComtrade': 'src' }
         )
