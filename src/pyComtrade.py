@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#Copyright (c) 2010 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
+#Copyright (c) 2013 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
 
 #This file is part of pyComtrade.
 #
@@ -19,19 +19,20 @@
 # ====================================================================
 
 # pyComtrade: A python Class for read and write IEEE
-#             Comtrade files.
+#             Comtrade files based on 1999 standard
 #
 #
-# OBS: - The field names ara iqual to Comtrade 1999 stantard;
+# OBS: - The field names ara iqual to Comtrade 1999 standard;
 #
 # Developed by Miguel Moreto
-# Federal University of Santa Catarina
-# Brazil - 2010
+# Brazil - 2013
 #
 #
 __version__ = "$Revision$" # SVN revision.
 __date__ = "$Date$" # Date of the last SVN revision.
 import os
+import numpy
+import struct
 
 class ComtradeRecord:
     """
@@ -83,24 +84,86 @@ class ComtradeRecord:
     ft = ''
     # Time stamp multiplication factor:
     timemult = 0.0
+    DatFileContent = ''
 
-    def __init__(self):
-        """ pyComtrade constructor, prints a message. """
-        print 'pyComtrade instance created!'
-
-    def ReadCFG(self,filename):
+    def __init__(self,filename):
         """
-        Reads the Comtrade header file (.cfg).
+        pyComtrade constructor: 
+            Prints a message. 
+            Clear the variables
+            Check if filename exists.
+            If so, read the CFG file.
+
+        filename: string with the path for the .cfg file.        
         
-        filename: string with the path for the .cfg file.
         """
-        if os.path.isfile:
+        print 'pyComtrade instance created!'
+        self.clear()
+        
+        if os.path.isfile(filename):
             self.filename = filename
+            self.ReadCFG()
         else:
             print "%s File not found." %(filename)
             return
+
+    def clear(self):
+        """
+        Clear the internal (private) variables of the class.
+        """
+        self.filename = ''
+        self.filehandler = 0
+        # Station name, identification and revision year:
+        self.station_name = ''
+        self.rec_dev_id = ''
+        self.rev_year = 0000
+        # Number and type of channels:
+        self.TT = 0
+        self.A = 0 # Number of analog channels.
+        self.D = 0 # Number of digital channels.
+        # Analog channel information:
+        self.An = []
+        self.Ach_id = []
+        self.Aph = []
+        self.Accbm = []
+        self.uu = []
+        self.a = []
+        self.b = []
+        self.skew = []
+        self.min = []
+        self.max = []
+        self.primary = []
+        self.secondary = []
+        self.PS = []
+        # Digital channel information:
+        self.Dn = []
+        self.Dch_id = []
+        self.Dph = []
+        self.Dccbm = []
+        self.y = []
+        # Line frequency:
+        self.lf = 0
+        # Sampling rate information:
+        self.nrates = 0
+        self.samp = []
+        self.endsamp = []
+        # Date/time stamps:
+        #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
+        self.start = [00,00,0000,00,00,0.0]
+        self.trigger = [00,00,0000,00,00,0.0]
+        # Data file type:
+        self.ft = ''
+        # Time stamp multiplication factor:
+        self.timemult = 0.0
+        
+        self.DatFileContent = ''
+        
+    def ReadCFG(self):
+        """
+        Reads the Comtrade header file (.cfg).
+        """
             
-        self.filehandler = open(filename,'r')
+        self.filehandler = open(self.filename,'r')
         # Processing first line:
         line = self.filehandler.readline()
         templist = line.split(',')
@@ -111,7 +174,6 @@ class ComtradeRecord:
         # Processing second line:
         line = self.filehandler.readline().rstrip() # Read line and remove spaces and new line characters.
         templist = line.split(',')
-        print templist
         self.TT = int(templist[0])
         self.A = int(templist[1].strip('A'))
         self.D = int(templist[2].strip('D'))
@@ -204,3 +266,122 @@ class ComtradeRecord:
         """
         return self.samp[0]
 
+    def getTime(self):
+        """
+        Actually, this function creates a time stamp vector 
+        based on the number of samples and sample rate.
+        """
+        T = 1/float(self.samp[self.nrates-1])
+        endtime = self.endsamp[self.nrates-1] * T
+
+        t = numpy.linspace(0,endtime,self.endsamp[self.nrates-1])
+
+        return t
+
+    def getAnalogID(self,num):
+        """
+        Returns the COMTRADE ID of a given channel number.
+        The number to be given is the same of the COMTRADE header.
+        """
+        listidx = self.An.index(num) # Get the position of the channel number.
+        return self.Ach_id[listidx]
+        
+    def getDigitalID(self,num):
+        """
+        Reads the COMTRADE ID of a given channel number.
+        The number to be given is the same of the COMTRADE header.
+        """
+        listidx = self.Dn.index(num) # Get the position of the channel number.
+        return self.Dch_id[listidx]
+        
+    def getAnalogType(self,num):
+        """
+        Returns the type  of the channel 'num' based 
+        on its unit stored in the Comtrade header file.
+        
+        Returns 'V' for a voltage channel and 'I' for a current channel.
+        """
+        listidx = self.An.index(num)
+        unit = self.uu[listidx]
+
+        if unit == 'kV' or unit == 'V':
+            return 'V'
+        elif unit == 'A' or unit == 'kA':
+            return 'I'
+        else:
+            print 'Unknown channel type'
+            return 0
+            
+    def getAnalogUnit(self,num):
+        """
+        Returns the COMTRADE channel unit (e.g., kV, V, kA, A)
+        of a given channel number.
+        The number to be given is the same of the COMTRADE header.
+        """
+        listidx = self.An.index(num) # Get the position of the channel number.
+        return self.uu[listidx]
+    
+    def ReadDataFile(self):
+        """
+        Reads the contents of the Comtrade .dat file and store them in a
+        private variable.
+        
+        For accessing a specific channel data, see methods getAnalogData and
+        getDigitalData.
+        """
+
+        # Removing . chars from the path
+        filename_list = self.filename.split('.') 
+        # Get the last-1 item from the list:
+        filename = filename_list[-2]
+        
+        if os.path.isfile('.' + filename + '.dat'):
+            filename = '.' + filename + '.dat'
+
+        elif os.path.isfile('.' + filename + '.DAT'):
+            filename = '.' + filename + '.DAT'
+        else:
+            print "Data file File not found."
+            return 0
+            
+        self.filehandler = open(filename,'rb')
+        self.DatFileContent = self.filehandler.read()
+        
+        # END READING .dat FILE.
+        self.filehandler.close() # Close file.        
+
+        return 1
+        
+    def getAnalogChannelData(self,ChNumber):
+        """
+        Returns an array of numbers containing the data values of the channel
+        number "ChNumber".
+        
+        ChNumber is the number of the channal as in .cfg file.
+        """
+
+        if not self.DatFileContent:
+            print "No data file content. Use the method ReadDataFile first"
+            return 0
+            
+        # Fomating string for struct module:
+        str_struct = "ii%dh" %(self.A + int(numpy.ceil((float(self.D)/float(16)))))
+        # Number of bytes per sample:
+        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2        
+        # Number of samples:
+        N = self.getNumberOfSamples()
+        
+        # Empty column vector:
+        values = numpy.empty((N,1))
+
+        ch_index = self.An.index(ChNumber)
+
+        # Reading the values from DatFileContent string:        
+        for i in range(N):
+            data = struct.unpack(str_struct,self.DatFileContent[i*NB:(i*NB)+NB])
+            values[i] = data[ChNumber+1] # The first two number ar the sample index and timestamp
+
+        values = values * self.a[ch_index] # a factor
+        values = values + self.b[ch_index] # b factor
+        
+        return values
