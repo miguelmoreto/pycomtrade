@@ -20,9 +20,13 @@
 
 from distutils.core import setup
 
+with open('README.txt') as file:
+    long_description = file.read()
+
 setup(name='pyComtrade',
         version='0.1.0',
         description='Python module for reading and writing Comtrade files.',
+        long_description=long_description,
         author='Miguel Moreto',
         author_email='moreto@ieee.org',
         maintainer='Miguel Moreto',
