@@ -363,6 +363,10 @@ class ComtradeRecord:
         if not self.DatFileContent:
             print "No data file content. Use the method ReadDataFile first"
             return 0
+        
+        if (ChNumber > self.A):
+            print "Channel number greater than the total number of channels."
+            return 0
             
         # Fomating string for struct module:
         str_struct = "ii%dh" %(self.A + int(numpy.ceil((float(self.D)/float(16)))))
@@ -376,7 +380,7 @@ class ComtradeRecord:
 
         ch_index = self.An.index(ChNumber)
 
-        # Reading the values from DatFileContent string:        
+        # Reading the values from DatFileContent string:
         for i in range(N):
             data = struct.unpack(str_struct,self.DatFileContent[i*NB:(i*NB)+NB])
             values[i] = data[ChNumber+1] # The first two number ar the sample index and timestamp
@@ -384,4 +388,47 @@ class ComtradeRecord:
         values = values * self.a[ch_index] # a factor
         values = values + self.b[ch_index] # b factor
         
+        return values
+        
+    def getDigitalChannelData(self,ChNumber):
+        """
+        Returns an array of numbers (0 or 1) containing the values of the 
+        digital channel status.
+        
+        ChNumber: digital channel number.
+        """
+
+        if not self.DatFileContent:
+            print "No data file content. Use the method ReadDataFile first"
+            return 0
+            
+        if (ChNumber > self.D):
+            print "Digital channel number greater than the total number of channels."
+            return 0
+        
+        # Fomating string for struct module:
+        str_struct = "ii%dh%dH" %(self.A, int(numpy.ceil((float(self.D)/float(16)))))
+        # Number of bytes per sample:
+        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2        
+        # Number of samples:
+        N = self.getNumberOfSamples()
+
+        # Empty column vector:
+        values = numpy.empty((N,1))
+        # Number of the 16 word where digital channal is. Every word contains
+        # 16 digital channels:
+        byte_number = int(numpy.ceil((ChNumber-1)/16)+1)
+        # Value of the digital channel. Ex. channal 1 has value 2^0=1, channel
+        # 2 has value 2^1 = 2, channel 3 => 2^2=4 and so on.
+        digital_ch_value = (1<<(ChNumber-1-(byte_number-1)*16))
+
+        # Reading the values from DatFileContent string:
+        for i in range(N):
+            data = struct.unpack(str_struct,self.DatFileContent[i*NB:(i*NB)+NB])
+            # The first two number ar the sample index and timestamp.
+            # And logic to extract only one channel from the 16 bit.
+            # Normalize the output to 0 or 1 
+            values[i] = (digital_ch_value & data[self.A+1+byte_number]) * 1/digital_ch_value 
+        
+        # Return the array.
         return values

@@ -33,7 +33,7 @@ import pyComtrade
 import pylab
 
  # Create an instance of the ComtradeRecord class and read the CFG file:
-comtradeObj = pyComtrade.ComtradeRecord('./test_data1/test1.cfg')
+comtradeObj = pyComtrade.ComtradeRecord('./test_data3/test3.cfg')
 
 print comtradeObj.Ach_id # print the ids of the analog channels.
 
@@ -46,11 +46,22 @@ print 'Sampling rate is %d samples/sec.' %(comtradeObj.getSamplingRate())
 comtradeObj.ReadDataFile()
 
 # Reading channel 4:
-channelData = comtradeObj.getAnalogChannelData(4)
+AnalogChannelData = comtradeObj.getAnalogChannelData(22)
+
+DigitalChannelData = comtradeObj.getDigitalChannelData(25)
 
 # Reading time vector:
 time = comtradeObj.getTime()
 
 # Ploting with matplotlib
-pylab.plot(time,channelData)
+#pylab.plot(time,channelData)
+f, axarr = pylab.subplots(2, sharex=True)
+
+axarr[0].plot(time, AnalogChannelData)
+axarr[0].set_title('pyComtrade Demo')
+axarr[0].grid()
+axarr[1].plot(time, DigitalChannelData)
+axarr[1].set_ylim(top=1.05) # bottom unchanged
+axarr[1].grid()
+axarr[1].set_xlabel('Time [s]')
 pylab.show()
