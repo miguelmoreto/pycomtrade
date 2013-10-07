@@ -13,10 +13,23 @@ Feel free to use the module in your program. Don't forget that pyComtrade is lic
 Release Notes
 ===============
 
+
+* Version 0.2.0
+
+  - Implemented a method to read digital channels.
+  - Updated example.
+  - Added one more test data with digital channel data.
+
 * Version 0.1.0
 
   - Reads only analog channels.
   - Reads only binary Comtrade files (1999 Standard).
+
+To Do
+===============
+
+* Read ASCII Comtrade Files (only binary for now)
+* Review the last varsion of Comtrade Standard C37.111-2013.
 
 Install
 ===============
