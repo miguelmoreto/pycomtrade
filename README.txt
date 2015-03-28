@@ -5,7 +5,7 @@ pyComtrade is a python module that provides you a transparent way for reading an
 
 Comtrade stands for COMmon format for Transient Data Exchange for power systems. It is a file format standardised by the IEEE that is used to store transient signals from Digital Fault Recorders, Oscillographs or Digital Protective Relays.
 
-pyContrade was created by Miguel Moreto at Federal Technological University of Parana - Brazil
+pyContrade was created and maintained by Miguel Moreto at Federal University of Santa Catarina - Brazil
 
 
 Feel free to use the module in your program. Don't forget that pyComtrade is licensed under the GNU version 3 license. For more info about this read the *COPYING.txt*.
@@ -51,7 +51,7 @@ Run::
 Usage
 ===============
 
-Se **example1.py** at the source file.
+See **example1.py** at the source file.
 
 Thanks for using pyComtrade module.
 
