@@ -40,51 +40,6 @@ class ComtradeRecord:
     
     This is the main class of pyComtrade.
     """
-    filename = ''
-    filehandler = 0
-    # Station name, identification and revision year:
-    station_name = ''
-    rec_dev_id = ''
-    rev_year = 0000
-    # Number and type of channels:
-    TT = 0
-    A = 0 # Number of analog channels.
-    D = 0 # Number of digital channels.
-    # Analog channel information:
-    An = []
-    Ach_id = []
-    Aph = []
-    Accbm = []
-    uu = []
-    a = []
-    b = []
-    skew = []
-    min = []
-    max = []
-    primary = []
-    secondary = []
-    PS = []
-    # Digital channel information:
-    Dn = []
-    Dch_id = []
-    Dph = []
-    Dccbm = []
-    y = []
-    # Line frequency:
-    lf = 0
-    # Sampling rate information:
-    nrates = 0
-    samp = []
-    endsamp = []
-    # Date/time stamps:
-    #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
-    start = [00,00,0000,00,00,0.0]
-    trigger = [00,00,0000,00,00,0.0]
-    # Data file type:
-    ft = ''
-    # Time stamp multiplication factor:
-    timemult = 0.0
-    DatFileContent = ''
 
     def __init__(self,filename):
         """
@@ -97,15 +52,13 @@ class ComtradeRecord:
         filename: string with the path for the .cfg file.        
         
         """
-        print 'pyComtrade instance created!'
         self.clear()
         
         if os.path.isfile(filename):
             self.filename = filename
             self.ReadCFG()
         else:
-            print "%s File not found." %(filename)
-            return
+            raise Exception("{}: File not found.".format(filename))
 
     def clear(self):
         """
@@ -309,8 +262,8 @@ class ComtradeRecord:
         elif unit == 'A' or unit == 'kA':
             return 'I'
         else:
-            print 'Unknown channel type'
-            return 0
+            # Unknown channel type
+            return None
             
     def getAnalogUnit(self,num):
         """
@@ -341,8 +294,7 @@ class ComtradeRecord:
         elif os.path.isfile('.' + filename + '.DAT'):
             filename = '.' + filename + '.DAT'
         else:
-            print "Data file File not found."
-            return 0
+            raise Exception("Data file File not found.")
             
         self.filehandler = open(filename,'rb')
         self.DatFileContent = self.filehandler.read()
@@ -361,12 +313,10 @@ class ComtradeRecord:
         """
 
         if not self.DatFileContent:
-            print "No data file content. Use the method ReadDataFile first"
-            return 0
+            raise Exception("No data file content. Use the method ReadDataFile first")
         
-        if (ChNumber > self.A):
-            print "Channel number greater than the total number of channels."
-            return 0
+        if ChNumber > self.A:
+            raise Exception("Channel number greater than the total number of channels.")
             
         # Fomating string for struct module:
         str_struct = "ii%dh" %(self.A + int(numpy.ceil((float(self.D)/float(16)))))
@@ -399,12 +349,10 @@ class ComtradeRecord:
         """
 
         if not self.DatFileContent:
-            print "No data file content. Use the method ReadDataFile first"
-            return 0
+            raise Exception("No data file content. Use the method ReadDataFile first")
             
         if (ChNumber > self.D):
-            print "Digital channel number greater than the total number of channels."
-            return 0
+            raise Exception("Digital channel number greater than the total number of channels.")
         
         # Fomating string for struct module:
         str_struct = "ii%dh%dH" %(self.A, int(numpy.ceil((float(self.D)/float(16)))))
