@@ -21,9 +21,6 @@ example:
 test:
 	nosetests -v --with-coverage --cover-package=pyComtrade --cover-inclusive --cover-erase tests
 
-clean:
-	find . -name "*.pyc" -print0 | xargs -0 rm -rf
-
 
 ################################################################################
 # Sphinx Configuration & Directives
@@ -62,6 +59,7 @@ help:
 
 .PHONY: clean
 clean:
+	find . -name "*.pyc" -print0 | xargs -0 rm -rf
 	rm -rf $(BUILDDIR)/*
 
 .PHONY: html
