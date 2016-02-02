@@ -8,7 +8,7 @@ Comtrade stands for COMmon format for Transient Data Exchange for power systems.
 pyContrade was created and maintained by Miguel Moreto at Federal University of Santa Catarina - Brazil
 
 
-Feel free to use the module in your program. Don't forget that pyComtrade is licensed under the GNU version 3 license. For more info about this read the *COPYING.txt*.
+Feel free to use the module in your program. Don't forget that pyComtrade is licensed under the GNU version 3 license. For more info about this read the *LICENSE.txt*.
 
 Release Notes
 ===============
@@ -40,7 +40,7 @@ Binaries
 Use the executables (win32 or win64). The binaries was generated for Python 2.7. If you have different version, install from source.
 
 From source (windows and linux)
-------------------------------- 
+-------------------------------
 
 Extract the source .zip file.
 
@@ -54,5 +54,3 @@ Usage
 See **example1.py** at the source file.
 
 Thanks for using pyComtrade module.
-
-

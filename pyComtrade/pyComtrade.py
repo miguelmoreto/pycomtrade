@@ -28,8 +28,7 @@
 # Brazil - 2013
 #
 #
-__version__ = "$Revision$" # SVN revision.
-__date__ = "$Date$" # Date of the last SVN revision.
+
 import os
 import numpy
 import struct
@@ -288,11 +287,11 @@ class ComtradeRecord:
         # Get the last-1 item from the list:
         filename = filename_list[-2]
 
-        if os.path.isfile('.' + filename + '.dat'):
-            filename = '.' + filename + '.dat'
+        if os.path.isfile(filename + '.dat'):
+            filename = filename + '.dat'
 
-        elif os.path.isfile('.' + filename + '.DAT'):
-            filename = '.' + filename + '.DAT'
+        elif os.path.isfile(filename + '.DAT'):
+            filename = filename + '.DAT'
         else:
             raise Exception("Data file File not found.")
 

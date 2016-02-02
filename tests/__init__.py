@@ -36,9 +36,9 @@ class InitializationTests(unittest.TestCase):
         Ensure the test suite can import our module
         """
         try:
-            import src
+            import pyComtrade
         except ImportError:
-            self.fail("Was not able to import the src")
+            self.fail("Was not able to import the pyComtrade")
 
 
 ##########################################################################

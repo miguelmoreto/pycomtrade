@@ -24,16 +24,15 @@
 # Developed by Miguel Moreto
 # Brazil - 2013
 #
-__version__ = "$Revision$" # SVN revision.
-__date__ = "$Date$" # Date of the last SVN revision.
 
 # Matplotlib module is needed for this example.
 # pyComtrade needs numpy.
 import pyComtrade
 import pylab
+import os
 
  # Create an instance of the ComtradeRecord class and read the CFG file:
-comtradeObj = pyComtrade.ComtradeRecord('./test_data3/test3.cfg')
+comtradeObj = pyComtrade.ComtradeRecord(os.path.join(os.getcwd(),'examples/test_data3/test3.cfg'))
 
 print comtradeObj.Ach_id # print the ids of the analog channels.
 
