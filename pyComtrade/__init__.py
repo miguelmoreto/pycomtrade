@@ -17,11 +17,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with pyComtrade.  If not, see <http://www.gnu.org/licenses/>.
 # ====================================================================
+
 """
 Initialize the pyComtrade module.
 """
-__version__ = "$Revision$" # SVN revision.
-__date__ = "$Date$" # Date of the last SVN revision.
 
-# Load the main functions of pyComtrade.py:
+##########################################################################
+## Imports
+##########################################################################
+
 from pyComtrade import *
+from version import get_version
+
+##########################################################################
+## Variables/Attritbutes
+##########################################################################
+
+__version__ = get_version()
