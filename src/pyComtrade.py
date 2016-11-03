@@ -329,27 +329,22 @@ class ComtradeRecord:
         For accessing a specific channel data, see methods getAnalogData and
         getDigitalData.
         """
-
-        # Removing . chars from the path
-        filename_list = self.filename.split('.') 
-        # Get the last-1 item from the list:
-        filename = filename_list[-2]
+        if os.path.isfile(self.filename[0:-4] + '.dat'):
+            filename = self.filename[0:-4] + '.dat'
+    
+        elif os.path.isfile(self.filename[0:-4] + '.DAT'):
+            filename = self.filename[0:-4] + '.DAT'
         
-        if os.path.isfile('.' + filename + '.dat'):
-            filename = '.' + filename + '.dat'
-
-        elif os.path.isfile('.' + filename + '.DAT'):
-            filename = '.' + filename + '.DAT'
         else:
             print "Data file File not found."
             return 0
-            
+        
         self.filehandler = open(filename,'rb')
         self.DatFileContent = self.filehandler.read()
-        
+    
         # END READING .dat FILE.
         self.filehandler.close() # Close file.        
-
+        
         return 1
         
     def getAnalogChannelData(self,ChNumber):
