@@ -28,84 +28,36 @@
 # Brazil - 2013
 #
 #
-__version__ = "$Revision$" # SVN revision.
-__date__ = "$Date$" # Date of the last SVN revision.
+
 import os
 import numpy
 import struct
 
 class ComtradeRecord:
     """
-    A python Class for read and write IEEE Comtrade files. 
-    
+    A python Class for read and write IEEE Comtrade files.
+
     This is the main class of pyComtrade.
     """
-    filename = ''
-    filehandler = 0
-    # Station name, identification and revision year:
-    station_name = ''
-    rec_dev_id = ''
-    rev_year = 0000
-    # Number and type of channels:
-    TT = 0
-    A = 0 # Number of analog channels.
-    D = 0 # Number of digital channels.
-    # Analog channel information:
-    An = []
-    Ach_id = []
-    Aph = []
-    Accbm = []
-    uu = []
-    a = []
-    b = []
-    skew = []
-    min = []
-    max = []
-    primary = []
-    secondary = []
-    PS = []
-    # Digital channel information:
-    Dn = []
-    Dch_id = []
-    Dph = []
-    Dccbm = []
-    y = []
-    # Line frequency:
-    lf = 0
-    # Sampling rate information:
-    nrates = 0
-    samp = []
-    endsamp = []
-    # Date/time stamps:
-    #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
-    start = [00,00,0000,00,00,0.0]
-    trigger = [00,00,0000,00,00,0.0]
-    # Data file type:
-    ft = ''
-    # Time stamp multiplication factor:
-    timemult = 0.0
-    DatFileContent = ''
 
     def __init__(self,filename):
         """
-        pyComtrade constructor: 
-            Prints a message. 
+        pyComtrade constructor:
+            Prints a message.
             Clear the variables
             Check if filename exists.
             If so, read the CFG file.
 
-        filename: string with the path for the .cfg file.        
-        
+        filename: string with the path for the .cfg file.
+
         """
-        print 'pyComtrade instance created!'
         self.clear()
-        
+
         if os.path.isfile(filename):
             self.filename = filename
             self.ReadCFG()
         else:
-            print "%s File not found." %(filename)
-            return
+            raise Exception("{}: File not found.".format(filename))
 
     def clear(self):
         """
@@ -155,14 +107,14 @@ class ComtradeRecord:
         self.ft = ''
         # Time stamp multiplication factor:
         self.timemult = 0.0
-        
+
         self.DatFileContent = ''
-        
+
     def ReadCFG(self):
         """
         Reads the Comtrade header file (.cfg).
         """
-            
+
         self.filehandler = open(self.filename,'r')
         # Processing first line:
         line = self.filehandler.readline()
@@ -243,13 +195,13 @@ class ComtradeRecord:
 
         # Read file type:
         self.ft = self.filehandler.readline()
-        
+
         # Read time multiplication factor:
         self.timemul = float(self.filehandler.readline())
 
         # END READING .CFG FILE.
         self.filehandler.close() # Close file.
-    
+
     def getNumberOfSamples(self):
         """
         Return the number of samples of the oscillographic record.
@@ -257,18 +209,18 @@ class ComtradeRecord:
         Only one smapling rate is taking into account for now.
         """
         return self.endsamp[0]
-        
+
     def getSamplingRate(self):
         """
         Return the sampling rate.
-        
+
         Only one smapling rate is taking into account for now.
         """
         return self.samp[0]
 
     def getTime(self):
         """
-        Actually, this function creates a time stamp vector 
+        Actually, this function creates a time stamp vector
         based on the number of samples and sample rate.
         """
         T = 1/float(self.samp[self.nrates-1])
@@ -285,7 +237,7 @@ class ComtradeRecord:
         """
         listidx = self.An.index(num) # Get the position of the channel number.
         return self.Ach_id[listidx]
-        
+
     def getDigitalID(self,num):
         """
         Reads the COMTRADE ID of a given channel number.
@@ -293,12 +245,12 @@ class ComtradeRecord:
         """
         listidx = self.Dn.index(num) # Get the position of the channel number.
         return self.Dch_id[listidx]
-        
+
     def getAnalogType(self,num):
         """
-        Returns the type  of the channel 'num' based 
+        Returns the type  of the channel 'num' based
         on its unit stored in the Comtrade header file.
-        
+
         Returns 'V' for a voltage channel and 'I' for a current channel.
         """
         listidx = self.An.index(num)
@@ -309,9 +261,9 @@ class ComtradeRecord:
         elif unit == 'A' or unit == 'kA':
             return 'I'
         else:
-            print 'Unknown channel type'
-            return 0
-            
+            # Unknown channel type
+            return None
+
     def getAnalogUnit(self,num):
         """
         Returns the COMTRADE channel unit (e.g., kV, V, kA, A)
@@ -320,61 +272,58 @@ class ComtradeRecord:
         """
         listidx = self.An.index(num) # Get the position of the channel number.
         return self.uu[listidx]
-    
+
     def ReadDataFile(self):
         """
         Reads the contents of the Comtrade .dat file and store them in a
         private variable.
-        
+
         For accessing a specific channel data, see methods getAnalogData and
         getDigitalData.
         """
 
         # Removing . chars from the path
-        filename_list = self.filename.split('.') 
+        filename_list = self.filename.split('.')
         # Get the last-1 item from the list:
         filename = filename_list[-2]
-        
-        if os.path.isfile('.' + filename + '.dat'):
-            filename = '.' + filename + '.dat'
 
-        elif os.path.isfile('.' + filename + '.DAT'):
-            filename = '.' + filename + '.DAT'
+        if os.path.isfile(filename + '.dat'):
+            filename = filename + '.dat'
+
+        elif os.path.isfile(filename + '.DAT'):
+            filename = filename + '.DAT'
         else:
-            print "Data file File not found."
-            return 0
-            
+            raise Exception("Data file File not found.")
+
         self.filehandler = open(filename,'rb')
         self.DatFileContent = self.filehandler.read()
-        
+
         # END READING .dat FILE.
-        self.filehandler.close() # Close file.        
+        self.filehandler.close() # Close file.
 
         return 1
-        
+
     def getAnalogChannelData(self,ChNumber):
         """
         Returns an array of numbers containing the data values of the channel
         number "ChNumber".
-        
+
         ChNumber is the number of the channal as in .cfg file.
         """
 
         if not self.DatFileContent:
-            print "No data file content. Use the method ReadDataFile first"
-            return 0
-        
-        if (ChNumber > self.A):
-            print "Channel number greater than the total number of channels."
-            return 0
-            
+            raise Exception("No data file content. Use the method ReadDataFile first")
+
+        if ChNumber > self.A:
+            raise Exception("Channel number greater than the total number of channels.")
+
         # Fomating string for struct module:
         str_struct = "ii%dh" %(self.A + int(numpy.ceil((float(self.D)/float(16)))))
         # Number of bytes per sample:
-        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2        
+        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2
         # Number of samples:
         N = self.getNumberOfSamples()
-        
+
         # Empty column vector:
         values = numpy.empty((N,1))
 
@@ -387,29 +336,27 @@ class ComtradeRecord:
 
         values = values * self.a[ch_index] # a factor
         values = values + self.b[ch_index] # b factor
-        
+
         return values
-        
+
     def getDigitalChannelData(self,ChNumber):
         """
-        Returns an array of numbers (0 or 1) containing the values of the 
+        Returns an array of numbers (0 or 1) containing the values of the
         digital channel status.
-        
+
         ChNumber: digital channel number.
         """
 
         if not self.DatFileContent:
-            print "No data file content. Use the method ReadDataFile first"
-            return 0
-            
+            raise Exception("No data file content. Use the method ReadDataFile first")
+
         if (ChNumber > self.D):
-            print "Digital channel number greater than the total number of channels."
-            return 0
-        
+            raise Exception("Digital channel number greater than the total number of channels.")
+
         # Fomating string for struct module:
         str_struct = "ii%dh%dH" %(self.A, int(numpy.ceil((float(self.D)/float(16)))))
         # Number of bytes per sample:
-        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2        
+        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2
         # Number of samples:
         N = self.getNumberOfSamples()
 
@@ -427,8 +374,8 @@ class ComtradeRecord:
             data = struct.unpack(str_struct,self.DatFileContent[i*NB:(i*NB)+NB])
             # The first two number ar the sample index and timestamp.
             # And logic to extract only one channel from the 16 bit.
-            # Normalize the output to 0 or 1 
-            values[i] = (digital_ch_value & data[self.A+1+byte_number]) * 1/digital_ch_value 
-        
+            # Normalize the output to 0 or 1
+            values[i] = (digital_ch_value & data[self.A+1+byte_number]) * 1/digital_ch_value
+
         # Return the array.
         return values
