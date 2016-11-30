@@ -207,15 +207,15 @@ class ComtradeRecord:
             self.y.append(int(templist[4]))
 
         # Read line frequency:
-        self.lf = int(self.filehandler.readline())
+        self.lf = int(float(self.filehandler.readline()))
 
         # Read sampling rates:
         self.nrates = int(self.filehandler.readline()) # nrates.
         for i in range(self.nrates): #@UnusedVariable
             line = self.filehandler.readline()
             templist = line.split(',')
-            self.samp.append(int(templist[0]))
-            self.endsamp.append(int(templist[1]))
+            self.samp.append(int(float(templist[0])))
+            self.endsamp.append(int(float(templist[1])))
 
         # Read start date and time ([dd,mm,yyyy,hh,mm,ss.ssssss]):
         line = self.filehandler.readline()
