@@ -169,6 +169,8 @@ class ComtradeRecord:
         templist = line.split(',')
         self.station_name = templist[0]
         self.rec_dev_id = templist[1]
+        # Odd cfg file may not contain all first line fields
+        # checking vector length to avoid IndexError
         if len(templist) > 2:
             self.rev_year = int(templist[2])
 
@@ -193,6 +195,8 @@ class ComtradeRecord:
             self.skew.append(float(templist[7]))
             self.min.append(int(templist[8]))
             self.max.append(int(templist[9]))
+            # Odd cfg file may not contain all analog channel fields
+            # checking vector length to avoid IndexError
             if len(templist) > 10:
                 self.primary.append(float(templist[10]))
             if len(templist) > 11:
@@ -207,6 +211,8 @@ class ComtradeRecord:
             self.Dn.append(int(templist[0]))
             self.Dch_id.append(templist[1])
             self.Dph.append(templist[2])
+            # Odd cfg file may not contain all digital channel fields
+            # checking vector length to avoid IndexError
             if len(templist) > 3:
                 self.Dccbm.append(templist[3])
             if len(templist) > 4:
@@ -251,6 +257,9 @@ class ComtradeRecord:
         self.ft = self.filehandler.readline()
         
         # Read time multiplication factor:
+        # Odd cfg file may not have multiplication field, so checking
+        # its existance before reading is a safe measure
+        # If the multiplication field is not available, it will be considered as 1
         self.timemul = self.filehandler.readline()
         if self.timemul != '':
             self.timemul = float(self.timemul)
