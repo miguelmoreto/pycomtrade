@@ -40,51 +40,6 @@ class ComtradeRecord:
     
     This is the main class of pyComtrade.
     """
-    filename = ''
-    filehandler = 0
-    # Station name, identification and revision year:
-    station_name = ''
-    rec_dev_id = ''
-    rev_year = 0000
-    # Number and type of channels:
-    TT = 0
-    A = 0 # Number of analog channels.
-    D = 0 # Number of digital channels.
-    # Analog channel information:
-    An = []
-    Ach_id = []
-    Aph = []
-    Accbm = []
-    uu = []
-    a = []
-    b = []
-    skew = []
-    min = []
-    max = []
-    primary = []
-    secondary = []
-    PS = []
-    # Digital channel information:
-    Dn = []
-    Dch_id = []
-    Dph = []
-    Dccbm = []
-    y = []
-    # Line frequency:
-    lf = 0
-    # Sampling rate information:
-    nrates = 0
-    samp = []
-    endsamp = []
-    # Date/time stamps:
-    #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
-    start = [00,00,0000,00,00,0.0]
-    trigger = [00,00,0000,00,00,0.0]
-    # Data file type:
-    ft = ''
-    # Time stamp multiplication factor:
-    timemult = 0.0
-    DatFileContent = ''
 
     def __init__(self,filename):
         """
@@ -97,8 +52,53 @@ class ComtradeRecord:
         filename: string with the path for the .cfg file.        
         
         """
+        filename = ''
+        filehandler = 0
+        # Station name, identification and revision year:
+        station_name = ''
+        rec_dev_id = ''
+        rev_year = 0000
+        # Number and type of channels:
+        TT = 0
+        A = 0 # Number of analog channels.
+        D = 0 # Number of digital channels.
+        # Analog channel information:
+        An = []
+        Ach_id = []
+        Aph = []
+        Accbm = []
+        uu = []
+        a = []
+        b = []
+        skew = []
+        min = []
+        max = []
+        primary = []
+        secondary = []
+        PS = []
+        # Digital channel information:
+        Dn = []
+        Dch_id = []
+        Dph = []
+        Dccbm = []
+        y = []
+        # Line frequency:
+        lf = 0
+        # Sampling rate information:
+        nrates = 0
+        samp = []
+        endsamp = []
+        # Date/time stamps:
+        #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
+        start = [00,00,0000,00,00,0.0]
+        trigger = [00,00,0000,00,00,0.0]
+        # Data file type:
+        ft = ''
+        # Time stamp multiplication factor:
+        timemult = 0.0
+        DatFileContent = ''
+        
         print 'pyComtrade instance created!'
-        self.clear()
         
         if os.path.isfile(filename):
             self.filename = filename
