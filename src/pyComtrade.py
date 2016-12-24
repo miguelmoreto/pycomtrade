@@ -82,9 +82,9 @@ class ComtradeRecord:
         self.Dph = []
         self.Dccbm = []
         self.y = []
-        self.# Line frequency:
+        # Line frequency:
         self.lf = 0
-        self.# Sampling rate information:
+        # Sampling rate information:
         self.nrates = 0
         self.samp = []
         self.endsamp = []
