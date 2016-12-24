@@ -41,51 +41,6 @@ class ComtradeRecord:
     
     This is the main class of pyComtrade.
     """
-    filename = ''
-    filehandler = 0
-    # Station name, identification and revision year:
-    station_name = ''
-    rec_dev_id = ''
-    rev_year = 0000
-    # Number and type of channels:
-    TT = 0
-    A = 0 # Number of analog channels.
-    D = 0 # Number of digital channels.
-    # Analog channel information:
-    An = []
-    Ach_id = []
-    Aph = []
-    Accbm = []
-    uu = []
-    a = []
-    b = []
-    skew = []
-    min = []
-    max = []
-    primary = []
-    secondary = []
-    PS = []
-    # Digital channel information:
-    Dn = []
-    Dch_id = []
-    Dph = []
-    Dccbm = []
-    y = []
-    # Line frequency:
-    lf = 0
-    # Sampling rate information:
-    nrates = 0
-    samp = []
-    endsamp = []
-    # Date/time stamps:
-    #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
-    start = [00,00,0000,00,00,0.0]
-    trigger = [00,00,0000,00,00,0.0]
-    # Data file type:
-    ft = ''
-    # Time stamp multiplication factor:
-    timemult = 0.0
-    DatFileContent = ''
 
     def __init__(self,filename):
         """
@@ -97,10 +52,55 @@ class ComtradeRecord:
 
         filename: string with the path for the .cfg file.        
         """
-        self.filename = filename
-        print self.filename
-        print 'pyComtrade instance created!'
 
+        self.filename = filename
+        self.filehandler = 0
+        # Station name, identification and revision year:
+        self.station_name = ''
+        self.rec_dev_id = ''
+        self.rev_year = 0000
+        # Number and type of channels:
+        self.TT = 0
+        self.A = 0 # Number of analog channels.
+        self.D = 0 # Number of digital channels.
+        # Analog channel information:
+        self.An = []
+        self.Ach_id = []
+        self.Aph = []
+        self.Accbm = []
+        self.uu = []
+        self.a = []
+        self.b = []
+        self.skew = []
+        self.min = []
+        self.max = []
+        self.primary = []
+        self.secondary = []
+        self.PS = []
+        # Digital channel information:
+        self.Dn = []
+        self.Dch_id = []
+        self.Dph = []
+        self.Dccbm = []
+        self.y = []
+        # Line frequency:
+        self.lf = 0
+        # Sampling rate information:
+        self.nrates = 0
+        self.samp = []
+        self.endsamp = []
+        # Date/time stamps:
+        #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
+        self.start = [00,00,0000,00,00,0.0]
+        self.trigger = [00,00,0000,00,00,0.0]
+        # Data file type:
+        self.ft = ''
+        # Time stamp multiplication factor:
+        self.timemult = 0.0
+        self.DatFileContent = ''
+        
+        print 'pyComtrade instance created!'
+        
     def clear(self):
         """
         Clear the internal (private) variables of the class.
