@@ -66,4 +66,3 @@ if checkCFG != 2:
 	axarr[1].grid()
 	axarr[1].set_xlabel('Time [s]')
 	pylab.show()
-	
