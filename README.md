@@ -29,7 +29,7 @@ To Do
 ===============
 
 * Read ASCII Comtrade Files (only binary for now)
-* Review the last varsion of Comtrade Standard C37.111-2013.
+* Review the last version of Comtrade Standard C37.111-2013.
 
 Install
 ===============
@@ -40,7 +40,7 @@ Binaries
 Use the executables (win32 or win64). The binaries was generated for Python 2.7. If you have different version, install from source.
 
 From source (windows and linux)
-------------------------------- 
+-------------------------------
 
 Extract the source .zip file.
 
@@ -54,5 +54,3 @@ Usage
 See **example1.py** at the source file.
 
 Thanks for using pyComtrade module.
-
-
