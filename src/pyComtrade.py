@@ -532,4 +532,4 @@ class ComtradeRecord:
 
         # Saving into dataframe
         values = pd.DataFrame(values, self.get_timestamps().tolist())
-        values.to_csv(path, header=True, index=True)
+        values.to_csv(path, header=True, index_label='timestamp')
