@@ -22,7 +22,7 @@
 #             Comtrade files based on 1999 standard
 #
 #
-# OBS: - The field names ara iqual to Comtrade 1999 standard;
+# OBS: - The field names are equal to Comtrade 1999 standard;
 #
 # Developed by Miguel Moreto
 # Brazil - 2013
@@ -31,418 +31,472 @@
 __version__ = "$Revision$" # SVN revision.
 __date__ = "$Date$" # Date of the last SVN revision.
 import os
-import numpy
+import numpy as np
 import struct
+import pandas as pd
+import yaml
 
 class ComtradeRecord:
     """
-    A python Class for read and write IEEE Comtrade files. 
-    
+    A python Class for reading and writing IEEE Comtrade files.
+
     This is the main class of pyComtrade.
     """
-    filename = ''
-    filehandler = 0
-    # Station name, identification and revision year:
-    station_name = ''
-    rec_dev_id = ''
-    rev_year = 0000
-    # Number and type of channels:
-    TT = 0
-    A = 0 # Number of analog channels.
-    D = 0 # Number of digital channels.
-    # Analog channel information:
-    An = []
-    Ach_id = []
-    Aph = []
-    Accbm = []
-    uu = []
-    a = []
-    b = []
-    skew = []
-    min = []
-    max = []
-    primary = []
-    secondary = []
-    PS = []
-    # Digital channel information:
-    Dn = []
-    Dch_id = []
-    Dph = []
-    Dccbm = []
-    y = []
-    # Line frequency:
-    lf = 0
-    # Sampling rate information:
-    nrates = 0
-    samp = []
-    endsamp = []
-    # Date/time stamps:
-    #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
-    start = [00,00,0000,00,00,0.0]
-    trigger = [00,00,0000,00,00,0.0]
-    # Data file type:
-    ft = ''
-    # Time stamp multiplication factor:
-    timemult = 0.0
-    DatFileContent = ''
 
-    def __init__(self,filename):
+    def __init__(self):
         """
-        pyComtrade constructor: 
-            Prints a message. 
-            Clear the variables
-            Check if filename exists.
-            If so, read the CFG file.
-
-        filename: string with the path for the .cfg file.        
-        
-        """
-        print 'pyComtrade instance created!'
-        self.clear()
-        
-        if os.path.isfile(filename):
-            self.filename = filename
-            self.ReadCFG()
-        else:
-            print "%s File not found." %(filename)
-            return
-
-    def clear(self):
-        """
-        Clear the internal (private) variables of the class.
-        """
-        self.filename = ''
-        self.filehandler = 0
-        # Station name, identification and revision year:
-        self.station_name = ''
-        self.rec_dev_id = ''
-        self.rev_year = 0000
-        # Number and type of channels:
-        self.TT = 0
-        self.A = 0 # Number of analog channels.
-        self.D = 0 # Number of digital channels.
-        # Analog channel information:
-        self.An = []
-        self.Ach_id = []
-        self.Aph = []
-        self.Accbm = []
-        self.uu = []
-        self.a = []
-        self.b = []
-        self.skew = []
-        self.min = []
-        self.max = []
-        self.primary = []
-        self.secondary = []
-        self.PS = []
-        # Digital channel information:
-        self.Dn = []
-        self.Dch_id = []
-        self.Dph = []
-        self.Dccbm = []
-        self.y = []
-        # Line frequency:
-        self.lf = 0
-        # Sampling rate information:
-        self.nrates = 0
-        self.samp = []
-        self.endsamp = []
-        # Date/time stamps:
-        #    defined by: [dd,mm,yyyy,hh,mm,ss.ssssss]
-        self.start = [00,00,0000,00,00,0.0]
-        self.trigger = [00,00,0000,00,00,0.0]
-        # Data file type:
-        self.ft = ''
-        # Time stamp multiplication factor:
-        self.timemult = 0.0
-        
-        self.DatFileContent = ''
-        
-    def ReadCFG(self):
-        """
-        Reads the Comtrade header file (.cfg).
-        """
-            
-        self.filehandler = open(self.filename,'r')
-        # Processing first line:
-        line = self.filehandler.readline()
-        templist = line.split(',')
-        self.station_name = templist[0]
-        self.rec_dev_id = templist[1]
-        # Odd cfg file may not contain all first line fields
-        # checking vector length to avoid IndexError
-        if len(templist) > 2:
-            self.rev_year = int(templist[2])
-
-        # Processing second line:
-        line = self.filehandler.readline().rstrip() # Read line and remove spaces and new line characters.
-        templist = line.split(',')
-        self.TT = int(templist[0])
-        self.A = int(templist[1].strip('A'))
-        self.D = int(templist[2].strip('D'))
-
-        # Processing analog channel lines:
-        for i in range(self.A): #@UnusedVariable
-            line = self.filehandler.readline()
-            templist = line.split(',')
-            self.An.append(int(templist[0]))
-            self.Ach_id.append(templist[1])
-            self.Aph.append(templist[2])
-            self.Accbm.append(templist[3])
-            self.uu.append(templist[4])
-            self.a.append(float(templist[5]))
-            self.b.append(float(templist[6]))
-            self.skew.append(float(templist[7]))
-            self.min.append(int(templist[8]))
-            self.max.append(int(templist[9]))
-            # Odd cfg file may not contain all analog channel fields
-            # checking vector length to avoid IndexError
-            if len(templist) > 10:
-                self.primary.append(float(templist[10]))
-            if len(templist) > 11:
-                self.secondary.append(float(templist[11]))
-            if len(templist) > 12:
-                self.PS.append(templist[12])
-
-        # Processing digital channel lines:
-        for i in range(self.D): #@UnusedVariable
-            line = self.filehandler.readline()
-            templist = line.split(',')
-            self.Dn.append(int(templist[0]))
-            self.Dch_id.append(templist[1])
-            self.Dph.append(templist[2])
-            # Odd cfg file may not contain all digital channel fields
-            # checking vector length to avoid IndexError
-            if len(templist) > 3:
-                self.Dccbm.append(templist[3])
-            if len(templist) > 4:
-                self.y.append(int(templist[4]))
-
-        # Read line frequency:
-        self.lf = int(float(self.filehandler.readline()))
-
-        # Read sampling rates:
-        self.nrates = int(self.filehandler.readline()) # nrates.
-        for i in range(self.nrates): #@UnusedVariable
-            line = self.filehandler.readline()
-            templist = line.split(',')
-            self.samp.append(int(float(templist[0])))
-            self.endsamp.append(int(float(templist[1])))
-
-        # Read start date and time ([dd,mm,yyyy,hh,mm,ss.ssssss]):
-        line = self.filehandler.readline()
-        templist = line.split('/')
-        self.start[0] = int(templist[0]) # day.
-        self.start[1] = int(templist[1]) # month.
-        templist = templist[2].split(',')
-        self.start[2] = int(templist[0]) # year.
-        templist = templist[1].split(':')
-        self.start[3] = int(templist[0]) # hours.
-        self.start[4] = int(templist[1]) # minutes.
-        self.start[5] = float(templist[2]) # seconds.
-
-        # Read trigger date and time ([dd,mm,yyyy,hh,mm,ss.ssssss]):
-        line = self.filehandler.readline()
-        templist = line.split('/')
-        self.trigger[0] = int(templist[0]) # day.
-        self.trigger[1] = int(templist[1]) # month.
-        templist = templist[2].split(',')
-        self.trigger[2] = int(templist[0]) # year.
-        templist = templist[1].split(':')
-        self.trigger[3] = int(templist[0]) # hours.
-        self.trigger[4] = int(templist[1]) # minutes.
-        self.trigger[5] = float(templist[2]) # seconds.
-
-        # Read file type:
-        self.ft = self.filehandler.readline()
-        
-        # Read time multiplication factor:
-        # Odd cfg file may not have multiplication field, so checking
-        # its existance before reading is a safe measure
-        # If the multiplication field is not available, it will be considered as 1
-        self.timemul = self.filehandler.readline()
-        if self.timemul != '':
-            self.timemul = float(self.timemul)
-        else:
-            self.timemul = 1
-
-        # END READING .CFG FILE.
-        self.filehandler.close() # Close file.
-    
-    def getNumberOfSamples(self):
-        """
-        Return the number of samples of the oscillographic record.
-
-        Only one smapling rate is taking into account for now.
-        """
-        return self.endsamp[0]
-        
-    def getSamplingRate(self):
-        """
-        Return the sampling rate.
-        
-        Only one smapling rate is taking into account for now.
-        """
-        return self.samp[0]
-
-    def getTime(self):
-        """
-        Actually, this function creates a time stamp vector 
-        based on the number of samples and sample rate.
-        """
-        T = 1/float(self.samp[self.nrates-1])
-        endtime = self.endsamp[self.nrates-1] * T
-
-        t = numpy.linspace(0,endtime,self.endsamp[self.nrates-1])
-
-        return t
-
-    def getAnalogID(self,num):
-        """
-        Returns the COMTRADE ID of a given channel number.
-        The number to be given is the same of the COMTRADE header.
-        """
-        listidx = self.An.index(num) # Get the position of the channel number.
-        return self.Ach_id[listidx]
-        
-    def getDigitalID(self,num):
-        """
-        Reads the COMTRADE ID of a given channel number.
-        The number to be given is the same of the COMTRADE header.
-        """
-        listidx = self.Dn.index(num) # Get the position of the channel number.
-        return self.Dch_id[listidx]
-        
-    def getAnalogType(self,num):
-        """
-        Returns the type  of the channel 'num' based 
-        on its unit stored in the Comtrade header file.
-        
-        Returns 'V' for a voltage channel and 'I' for a current channel.
-        """
-        listidx = self.An.index(num)
-        unit = self.uu[listidx]
-
-        if unit == 'kV' or unit == 'V':
-            return 'V'
-        elif unit == 'A' or unit == 'kA':
-            return 'I'
-        else:
-            print 'Unknown channel type'
-            return 0
-            
-    def getAnalogUnit(self,num):
-        """
-        Returns the COMTRADE channel unit (e.g., kV, V, kA, A)
-        of a given channel number.
-        The number to be given is the same of the COMTRADE header.
-        """
-        listidx = self.An.index(num) # Get the position of the channel number.
-        return self.uu[listidx]
-    
-    def ReadDataFile(self):
-        """
-        Reads the contents of the Comtrade .dat file and store them in a
-        private variable.
-        
-        For accessing a specific channel data, see methods getAnalogData and
-        getDigitalData.
-        """
-        if os.path.isfile(self.filename[0:-4] + '.dat'):
-            filename = self.filename[0:-4] + '.dat'
-    
-        elif os.path.isfile(self.filename[0:-4] + '.DAT'):
-            filename = self.filename[0:-4] + '.DAT'
-        
-        else:
-            print "Data file File not found."
-            return 0
-        
-        self.filehandler = open(filename,'rb')
-        self.DatFileContent = self.filehandler.read()
-    
-        # END READING .dat FILE.
-        self.filehandler.close() # Close file.        
-        
-        return 1
-        
-    def getAnalogChannelData(self,ChNumber):
-        """
-        Returns an array of numbers containing the data values of the channel
-        number "ChNumber".
-        
-        ChNumber is the number of the channal as in .cfg file.
+        Initializes a ComtradeRecord instance.
         """
 
-        if not self.DatFileContent:
-            print "No data file content. Use the method ReadDataFile first"
-            return 0
-        
-        if (ChNumber > self.A):
-            print "Channel number greater than the total number of channels."
-            return 0
-            
-        # Fomating string for struct module:
-        str_struct = "ii%dh" %(self.A + int(numpy.ceil((float(self.D)/float(16)))))
-        # Number of bytes per sample:
-        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2        
-        # Number of samples:
-        N = self.getNumberOfSamples()
-        
-        # Empty column vector:
-        values = numpy.empty((N,1))
+        # Argument string
+        self.arg_str = ['header', 'nchannels', 'A', 'D', 'line_freq', 'nrates',
+        'samples', 'start', 'trigger', 'file_type', 'timemult', 'time_code'
+        'tmq_code']
 
-        ch_index = self.An.index(ChNumber)
+        # Function dictionary
+        self.fun_dct = {
+            'header':self.dct_header,
+            'nchannels':self.dct_nchannels,
+            'A':self.dct_analog,
+            'D':self.dct_digital,
+            'line_freq':self.dct_lf,
+            'nrates':self.dct_nrates,
+            'samples':self.dct_samples,
+            'start':self.dct_start,
+            'trigger':self.dct_trigger,
+            'file_type':self.dct_ft,
+            'timemult':self.dct_tml,
+            'time_code':self.dct_tcd,
+            'tmq_code':self.dct_tmq
+        }
 
-        # Reading the values from DatFileContent string:
-        for i in range(N):
-            data = struct.unpack(str_struct,self.DatFileContent[i*NB:(i*NB)+NB])
-            values[i] = data[ChNumber+1] # The first two number ar the sample index and timestamp
+        # Initializing variables
+        self.reset()
 
-        values = values * self.a[ch_index] # a factor
-        values = values + self.b[ch_index] # b factor
-        
-        return values
-        
-    def getDigitalChannelData(self,ChNumber):
-        """
-        Returns an array of numbers (0 or 1) containing the values of the 
-        digital channel status.
-        
-        ChNumber: digital channel number.
-        """
+    def reset(self):
+        '''
+        Resets an instance to its initial state.
+        '''
 
-        if not self.DatFileContent:
-            print "No data file content. Use the method ReadDataFile first"
-            return 0
-            
-        if (ChNumber > self.D):
-            print "Digital channel number greater than the total number of channels."
-            return 0
-        
-        # Fomating string for struct module:
-        str_struct = "ii%dh%dH" %(self.A, int(numpy.ceil((float(self.D)/float(16)))))
-        # Number of bytes per sample:
-        NB = 4 + 4 + self.A*2 + int(numpy.ceil((float(self.D)/float(16))))*2        
-        # Number of samples:
-        N = self.getNumberOfSamples()
+        # Resets the variables
+        self.cfg_data = {} # Config data
+        self.bdata = None # Binary file data
 
-        # Empty column vector:
-        values = numpy.empty((N,1))
-        # Number of the 16 word where digital channal is. Every word contains
-        # 16 digital channels:
-        byte_number = int(numpy.ceil((ChNumber-1)/16)+1)
-        # Value of the digital channel. Ex. channal 1 has value 2^0=1, channel
-        # 2 has value 2^1 = 2, channel 3 => 2^2=4 and so on.
-        digital_ch_value = (1<<(ChNumber-1-(byte_number-1)*16))
+    def cast_data(self, data):
+        '''
+        Cast data to the correct type.
 
-        # Reading the values from DatFileContent string:
-        for i in range(N):
-            data = struct.unpack(str_struct,self.DatFileContent[i*NB:(i*NB)+NB])
-            # The first two number ar the sample index and timestamp.
-            # And logic to extract only one channel from the 16 bit.
-            # Normalize the output to 0 or 1 
-            values[i] = (digital_ch_value & data[self.A+1+byte_number]) * 1/digital_ch_value 
-        
-        # Return the array.
-        return values
+        @param data argument to be casted.
+
+        @return data with the correctly parsed type.
+        '''
+
+        # Test each type
+        try:
+            # int
+            return int(data)
+        except ValueError:
+            pass
+        try:
+            # float
+            return float(data)
+        except ValueError:
+            pass
+        if data in ['True', 'False']:
+            # boolean
+            return data == 'True'
+        # A string
+        return data
+
+    def proc_line(self, line, arg):
+        '''
+        Processes a COMTRADE config file line.
+
+        @param line input line.
+        @param arg type of line/argument.
+
+        @return dictionary with the lines elements.
+        '''
+
+        # Stripe line from end data and split each property
+        line = line.rstrip().split(',')
+
+        # Parsing, if needed
+        if arg=='nchannels':
+            line[1] = line[1][:-1] # Removing the 'A' letter from the number
+            line[2] = line[2][:-1] # Removing the 'D' letter from the number
+
+        # Casting
+        line = [self.cast_data(l) for l in line]
+
+        # Processing and returning dictionary
+        return self.fun_dct[arg](line)
+
+    def dct_header(self, data):
+        '''
+        Converts header line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['station_name'] = data[0] # Station name
+        output['rec_dev_id'] = data[1] # Recording device ID
+        if len(data) > 2: # From 1999 revision
+            output['rev_year'] = data[2] # Standard revision year
+        return output
+
+    def dct_nchannels(self, data):
+        '''
+        Converts number of channels line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['TT'] = data[0] # Number of channels (#A+#D)
+        output['#A'] = data[1] # Number of analogic channels
+        output['#D'] = data[2] # Number of analogic channels
+        return output
+
+    def dct_analog(self, data):
+        '''
+        Converts analog channel line to dictionary form.
+
+        @param data data to be converted
+        '''
+
+        # Setting initial output and properties string
+        output = {}
+        dt_str = [
+            'An', # analog channel index number
+            'ch_id', # station_name:channel_name
+            'ph', # channel phase identification (0 to 2)
+            'ccbm', # circuit component being monitored
+            'uu', # channel units
+            'a', # channel multiplier
+            'b', # channel offset
+            'skew', # time skew between channels
+            'min', # data range minimum value
+            'max', # data range maximum value
+            'primary', # PT/CT primary ratio factor
+            'secondary', # PT/CT scondary ratio factor
+            'P_S' # primary or secondary PT/CT scaling identifier. 'P' or 'S'
+        ]
+
+        # For each data property
+        for dtidx, dt in enumerate(data):
+
+            # Getting data
+            dn = dt_str[dtidx]
+            output[dn] = dt
+
+        # Return output
+        return output
+
+    def dct_digital(self, data):
+        '''
+        Converts digital channel line to dictionary form.
+
+        @param data data to be converted
+        '''
+
+        # Setting initial output and properties string
+        output = {}
+        dt_str = [
+            'Dn', # Digital channel index
+            'ch_id', # station_name:channel_name
+            'ph', # channel phase identification
+            'ccbm', # circuit component being monitore
+            'y' # normal state of the channel
+        ]
+
+        # For each data property
+        for dtidx, dt in enumerate(data):
+
+            # Getting data
+            dn = dt_str[dtidx]
+            output[dn] = dt
+
+        # Return output
+        return output
+
+    def dct_lf(self, data):
+        '''
+        Converts line freq line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['line_freq'] = data[0] # Line frequency in Hz
+        return output
+
+    def dct_nrates(self, data):
+        '''
+        Converts nrates line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['nrates'] = data[0] # Number of sampling rates in the file
+        return output
+
+    def dct_samples(self, data):
+        '''
+        Converts samples line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {'samp': [], 'endsamp': []}
+
+        # For each sample rate
+        for i in range(self.cfg_data['nrates']):
+            output['samp'].append(data[0]) # Sample rates
+            output['endsamp'].append(data[1]) # Number of samples
+        return output
+
+    def dct_start(self, data):
+        '''
+        Converts start date/time line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['start_date'] = data[0] # Start date
+        output['start_time'] = data[1] # Start time
+        return output
+
+    def dct_trigger(self, data):
+        '''
+        Converts trigger date/time line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['trigger_date'] = data[0] # Trigger date
+        output['trigger_time'] = data[1] # Trigger time
+        return output
+
+    def dct_ft(self, data):
+        '''
+        Converts file type line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['file_type'] = data[0] # File type
+        return output
+
+    def dct_tml(self, data):
+        '''
+        Converts timemult line to dictionary form.
+
+        @param data data to be converted
+        '''
+        output = {}
+        output['file_type'] = data[0] # time multiplication factor/scale
+        return output
+
+    def dct_tcd(self, data): # TODO
+        return NotImplementedError
+
+    def dct_tmq(self, data): # TODO
+        return NotImplementedError
+
+    def get_timestamps(self):
+        '''
+        Returns the samples timestamp
+        '''
+        t_interval = 1/float(self.cfg_data['samp'][-1])
+        n_samples = self.cfg_data['endsamp'][-1]
+        t_end = n_samples*t_interval
+        return np.linspace(0, t_end, n_samples)
+
+    def read_binary(self, file_path):
+        '''
+        Reads binary data file.
+
+        @param file_path binary file path.
+        '''
+
+        # Opens file and reads all data
+        with open(file_path, 'rb') as bdata:
+            self.bdata = bdata.read()
+
+        # Reading analogic data
+        self.read_bin_analog()
+        self.read_bin_digital()
+
+    def read_bin_analog(self):
+        '''
+        Reads analog channels data from binary data.
+        '''
+
+        # Getting auxiliary variables
+        nA = self.cfg_data['#A']
+        nD = self.cfg_data['#D']
+        nH = int(np.ceil(nD/16.0))
+        nS = self.cfg_data['endsamp']
+
+        # Setting struct string
+        str_struct = "ii{0}h".format(nA + nH)
+
+        # Number of bytes per sample
+        nbps = 4+4+nA*2+nH*2
+
+        # For each channel
+        for cidx in range(self.cfg_data['#A']):
+
+            # Setting initial values
+            values = []
+            for sidx in range(nS):
+
+                # Unpacking data
+                data = self.bdata[sidx*nbps:(sidx+1)*nbps]
+                data = struct.unpack(str_struct, data)
+                values.append(data[cidx+2])
+
+            # Converting values
+            values = np.array(values)
+            values = values * self.cfg_data['A'][cidx]['a']
+            values = values + self.cfg_data['A'][cidx]['b']
+            self.cfg_data['A'][cidx]['values'] = values.tolist()
+
+    def read_bin_digital(self):
+        '''
+        Reads digitals channels data from binary data.
+        '''
+
+        # Getting auxiliary variables
+        nA = self.cfg_data['#A']
+        nD = self.cfg_data['#D']
+        nH = int(np.ceil(nD/16.0))
+        nS = self.cfg_data['endsamp']
+
+        # Setting struct string
+        str_struct = "ii{0}h{1}H".format(nA, nH)
+
+        # Number of bytes per sample
+        nbps = 4+4+nA*2+nH*2
+
+        # For each channel
+        for cidx in range(self.cfg_data['#D']):
+
+            # Byte number
+            bnum = int(np.ceil(cidx/16)+1)
+
+            # Digital channel value
+            dchan_val = (1<<(cidx-(bnum-1)*16))
+
+            # Setting initial values
+            values = []
+            for sidx in range(nS):
+
+                # Unpacking data
+                data = self.bdata[sidx*nbps:(sidx+1)*nbps]
+                data = struct.unpack(str_struct, data)
+                data = (dchan_val & data[nA+1+bnum]) * 1/dchan_val
+                values.append(data)
+
+            # Converting values
+            values = np.array(values)
+            self.cfg_data['D'][cidx]['values'] = values.tolist()
+
+    def read(self, cfg_path, dat_path):
+        '''
+        Reads a COMTRADE file.
+
+        @param cfg_path configuration data file (*.CFG).
+        @param dat_path data file (*.DAT).
+
+        @return dictionary with the COMTRADE file content.
+        '''
+
+        # Reset data content
+        self.reset()
+
+        # Try to open the config file
+        with open(cfg_path, 'r') as cfg_file:
+
+            # For each argument
+            for arg in self.arg_str:
+
+                # Extracting and testing arguments
+                if arg in ['A', 'D']:
+
+                    # Number of channels
+                    nchnn = self.cfg_data['#A']
+                    if arg=='D':
+                        nchnn = self.cfg_data['#D']
+
+                    # Reading analog/digital  channels
+                    self.cfg_data[arg] = []
+                    for i in range(nchnn):
+
+                        # Read line
+                        line = cfg_file.readline()
+                        if line.rstrip() == '':
+                            break
+
+                        # Process line
+                        out_dct = self.proc_line(line, arg)
+                        self.cfg_data[arg].append(out_dct.copy())
+
+                else:
+
+                    # Remaining channels
+
+                    # Read line
+                    line = cfg_file.readline()
+                    if line.rstrip() == '':
+                        break
+
+                    # Process line
+                    out_dct = self.proc_line(line, arg)
+                    self.cfg_data.update(out_dct)
+
+        # Reading data file. TODO: Add ASCII option
+        self.read_binary(dat_path)
+
+    def __getitem__(self, key):
+        '''
+        Returns a config file key value.
+
+        @param key target key.
+
+        @return key value.
+        '''
+        return self.cfg_data[key]
+
+    def to_yaml(self, path):
+        '''
+        Saves file in yaml format.
+
+        @param path file path.
+        '''
+
+        # Converto to yaml
+        with open(path, 'w') as stream:
+            yaml.dump(self.cfg_data, stream)
+
+    def to_csv(self, path):
+        '''
+        Saves channels signals in a csv file.
+
+        @param path csv file
+        '''
+
+        # Saving values
+        achan = self.cfg_data['A']
+        dchan = self.cfg_data['D']
+
+        # Keys
+        k = 'values'
+        c = 'ch_id'
+
+        # Converting each channel signal into a dictionary
+        values = {}
+        values.update({v[c]:v[k] for v in achan})
+        values.update({v[c]:v[k] for v in dchan})
+
+        # Saving into dataframe
+        values = pd.DataFrame(values, self.get_timestamps())
+        values.to_csv(path, header=True, index=True)
