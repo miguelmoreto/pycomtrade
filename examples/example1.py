@@ -32,26 +32,24 @@ __date__ = "$Date$" # Date of the last SVN revision.
 import pyComtrade
 import pylab
 
- # Create an instance of the ComtradeRecord class and read the CFG file:
-comtradeObj = pyComtrade.ComtradeRecord('./test_data3/test3.cfg')
+# Create an instance of the ComtradeRecord class and read the CFG file:
+comtradeObj = pyComtrade.ComtradeRecord()
+comtradeObj.read('./test_data3/test3.cfg', './test_data3/test3.dat')
 
-print comtradeObj.Ach_id # print the ids of the analog channels.
+print comtradeObj.get_analog_ids() # print the ids of the analog channels.
 
-N = comtradeObj.getNumberOfSamples()
+N = comtradeObj['endsamp'][-1]
 
 print 'Record has %d samples' %(N)
-print 'Sampling rate is %d samples/sec.' %(comtradeObj.getSamplingRate())
-
-# Reading data file:
-comtradeObj.ReadDataFile()
+print 'Sampling rate is %d samples/sec.' %(comtradeObj['samp'][-1])
 
 # Reading channel 4:
-AnalogChannelData = comtradeObj.getAnalogChannelData(22)
+AnalogChannelData = comtradeObj['A'][22]['values']
 
-DigitalChannelData = comtradeObj.getDigitalChannelData(25)
+DigitalChannelData = comtradeObj['D'][25]['values']
 
 # Reading time vector:
-time = comtradeObj.getTime()
+time = comtradeObj.get_timestamps()
 
 # Ploting with matplotlib
 #pylab.plot(time,channelData)

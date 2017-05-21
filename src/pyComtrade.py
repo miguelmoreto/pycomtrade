@@ -136,7 +136,8 @@ class ComtradeRecord:
         '''
         Converts header line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @return station name, recording device id, and standard revision year
         '''
         output = {}
         output['station_name'] = data[0] # Station name
@@ -149,7 +150,8 @@ class ComtradeRecord:
         '''
         Converts number of channels line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @return number of channels info.
         '''
         output = {}
         output['TT'] = data[0] # Number of channels (#A+#D)
@@ -161,7 +163,8 @@ class ComtradeRecord:
         '''
         Converts analog channel line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @return analog channel data.
         '''
 
         # Setting initial output and properties string
@@ -197,6 +200,7 @@ class ComtradeRecord:
         Converts digital channel line to dictionary form.
 
         @param data data to be converted
+        @return digital channel data.
         '''
 
         # Setting initial output and properties string
@@ -223,7 +227,8 @@ class ComtradeRecord:
         '''
         Converts line freq line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @return line frequency.
         '''
         output = {}
         output['line_freq'] = data[0] # Line frequency in Hz
@@ -233,7 +238,8 @@ class ComtradeRecord:
         '''
         Converts nrates line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @return number of sampling rates.
         '''
         output = {}
         output['nrates'] = data[0] # Number of sampling rates in the file
@@ -244,6 +250,7 @@ class ComtradeRecord:
         Converts samples line to dictionary form.
 
         @param data data to be converted
+        @return sampling rates and number of samples.
         '''
         output = {'samp': [], 'endsamp': []}
 
@@ -257,7 +264,8 @@ class ComtradeRecord:
         '''
         Converts start date/time line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @return start date/time data.
         '''
         output = {}
         output['start_date'] = data[0] # Start date
@@ -269,6 +277,7 @@ class ComtradeRecord:
         Converts trigger date/time line to dictionary form.
 
         @param data data to be converted
+        @return trigger date/time data.
         '''
         output = {}
         output['trigger_date'] = data[0] # Trigger date
@@ -280,6 +289,7 @@ class ComtradeRecord:
         Converts file type line to dictionary form.
 
         @param data data to be converted
+        @return file type.
         '''
         output = {}
         output['file_type'] = data[0] # File type
@@ -289,7 +299,8 @@ class ComtradeRecord:
         '''
         Converts timemult line to dictionary form.
 
-        @param data data to be converted
+        @param data data to be converted.
+        @param time multiplication factor/scale.
         '''
         output = {}
         output['file_type'] = data[0] # time multiplication factor/scale
@@ -304,11 +315,33 @@ class ComtradeRecord:
     def get_timestamps(self):
         '''
         Returns the samples timestamp
+
+        @return timestamp vector.
         '''
         t_interval = 1/float(self.cfg_data['samp'][-1])
         n_samples = self.cfg_data['endsamp'][-1]
         t_end = n_samples*t_interval
         return np.linspace(0, t_end, n_samples)
+
+    def get_analog_ids(self):
+        '''
+        Returns analog channels ID
+
+        @return string with analog channels ID.
+        '''
+        analog_ids = [v['ch_id'] for v in self.cfg_data['A']]
+        analog_ids = ' '.join(analog_ids)
+        return analog_ids
+
+    def get_digital_ids(self):
+        '''
+        Returns digital channels ID
+
+        @return string with digital channels ID.
+        '''
+        digitial_ids = [v['ch_id'] for v in self.cfg_data['D']]
+        digitial_ids = ' '.join(digitial_ids)
+        return digitial_ids
 
     def read_binary(self, file_path):
         '''
@@ -334,7 +367,7 @@ class ComtradeRecord:
         nA = self.cfg_data['#A']
         nD = self.cfg_data['#D']
         nH = int(np.ceil(nD/16.0))
-        nS = self.cfg_data['endsamp']
+        nS = self.cfg_data['endsamp'][-1]
 
         # Setting struct string
         str_struct = "ii{0}h".format(nA + nH)
@@ -369,7 +402,7 @@ class ComtradeRecord:
         nA = self.cfg_data['#A']
         nD = self.cfg_data['#D']
         nH = int(np.ceil(nD/16.0))
-        nS = self.cfg_data['endsamp']
+        nS = self.cfg_data['endsamp'][-1]
 
         # Setting struct string
         str_struct = "ii{0}h{1}H".format(nA, nH)
@@ -498,5 +531,5 @@ class ComtradeRecord:
         values.update({v[c]:v[k] for v in dchan})
 
         # Saving into dataframe
-        values = pd.DataFrame(values, self.get_timestamps())
+        values = pd.DataFrame(values, self.get_timestamps().tolist())
         values.to_csv(path, header=True, index=True)
