@@ -330,7 +330,7 @@ class ComtradeRecord:
         @return string with analog channels ID.
         '''
         analog_ids = [v['ch_id'] for v in self.cfg_data['A']]
-        analog_ids = ' '.join(analog_ids)
+        analog_ids = ';'.join(analog_ids)
         return analog_ids
 
     def get_digital_ids(self):
@@ -340,7 +340,7 @@ class ComtradeRecord:
         @return string with digital channels ID.
         '''
         digitial_ids = [v['ch_id'] for v in self.cfg_data['D']]
-        digitial_ids = ' '.join(digitial_ids)
+        digitial_ids = ';'.join(digitial_ids)
         return digitial_ids
 
     def read_binary(self, file_path):
