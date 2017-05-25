@@ -36,7 +36,7 @@ import struct
 import pandas as pd
 import yaml
 
-class ComtradeRecord:
+class ComtradeRecord(object):
     """
     A python Class for reading and writing IEEE Comtrade files.
 
@@ -491,13 +491,22 @@ class ComtradeRecord:
 
     def __getitem__(self, key):
         '''
-        Returns a config file key value.
+        Returns a COMTRADE file key value.
 
         @param key target key.
 
         @return key value.
         '''
         return self.cfg_data[key]
+
+    def __setitem__(self, key, item):
+        '''
+        Sets a COMTRADE file key value
+
+        @param key target key.
+        @param item target key value.
+        '''
+        self.cfg_data[key] = item
 
     def to_yaml(self, path):
         '''
