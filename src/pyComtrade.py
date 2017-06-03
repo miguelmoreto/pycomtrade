@@ -343,6 +343,35 @@ class ComtradeRecord(object):
         digitial_ids = ';'.join(digitial_ids)
         return digitial_ids
 
+    def read_ascii(self, file_path):
+        '''
+        Reads ASCII data file.
+
+        @param file_path ASCII file path.
+        '''
+
+        # Open data
+        data = pd.read_csv(file_path, index_col=0, header=None)
+
+        # Convert values
+        data = data.T.values.tolist()
+        data = data[1:]
+
+        # For each analog channel
+        for cidx in range(self.cfg_data['#A']):
+
+            # Reading channels
+            self.cfg_data['A'][cidx]['values'] = data[cidx]
+
+        # Removing analog channels
+        data = data[self.cfg_data['#A']:]
+
+        # For each digital channel
+        for cidx in range(self.cfg_data['#D']):
+
+            # Reading channels
+            self.cfg_data['D'][cidx]['values'] = data[cidx]
+
     def read_binary(self, file_path):
         '''
         Reads binary data file.
@@ -486,8 +515,13 @@ class ComtradeRecord(object):
                     out_dct = self.proc_line(line, arg)
                     self.cfg_data.update(out_dct)
 
-        # Reading data file. TODO: Add ASCII option
-        self.read_binary(dat_path)
+        # Reading data file. Add ASCII option
+        if self.cfg_data['file_type'] == 'ASCII':
+            # Read ASCII file
+            self.read_ascii(dat_path)
+        else:
+            # Read binary
+            self.read_binary(dat_path)
 
     def __getitem__(self, key):
         '''
