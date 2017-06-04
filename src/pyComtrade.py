@@ -303,7 +303,7 @@ class ComtradeRecord(object):
         @param time multiplication factor/scale.
         '''
         output = {}
-        output['file_type'] = data[0] # time multiplication factor/scale
+        output['timemult'] = data[0] # time multiplication factor/scale
         return output
 
     def dct_tcd(self, data): # TODO
