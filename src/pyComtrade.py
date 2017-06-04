@@ -361,7 +361,10 @@ class ComtradeRecord(object):
         for cidx in range(self.cfg_data['#A']):
 
             # Reading channels
-            self.cfg_data['A'][cidx]['values'] = data[cidx]
+            values = np.array(data[cidx])
+            values = values * self.cfg_data['A'][cidx]['a']
+            values = values + self.cfg_data['A'][cidx]['b']
+            self.cfg_data['A'][cidx]['values'] = values.tolist()
 
         # Removing analog channels
         data = data[self.cfg_data['#A']:]
