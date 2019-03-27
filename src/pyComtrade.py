@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#Copyright (c) 2013 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
+# Copyright (c) 2013 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
 
-#This file is part of pyComtrade.
+# This file is part of pyComtrade.
 #
 #    pyComtrade is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -29,9 +29,9 @@
 #
 #
 from __future__ import division
-__version__ = "$Revision$" # SVN revision.
-__date__ = "$Date$" # Date of the last SVN revision.
-import os
+__version__ = "$Revision$"  # SVN revision.
+__date__ = "$Date$"         # Date of the last SVN revision.
+
 
 import numpy as np
 import struct
@@ -39,6 +39,7 @@ import pandas as pd
 import yaml
 
 from .utils import _unicode
+
 
 class ComtradeRecord(object):
     """
@@ -54,24 +55,24 @@ class ComtradeRecord(object):
 
         # Argument string
         self.arg_str = ['header', 'nchannels', 'A', 'D', 'line_freq', 'nrates',
-        'samples', 'start', 'trigger', 'file_type', 'timemult', 'time_code'
-        'tmq_code']
+                        'samples', 'start', 'trigger', 'file_type', 'timemult',
+                        'time_code', 'tmq_code']
 
         # Function dictionary
         self.fun_dct = {
-            'header':self.dct_header,
-            'nchannels':self.dct_nchannels,
-            'A':self.dct_analog,
-            'D':self.dct_digital,
-            'line_freq':self.dct_lf,
-            'nrates':self.dct_nrates,
-            'samples':self.dct_samples,
-            'start':self.dct_start,
-            'trigger':self.dct_trigger,
-            'file_type':self.dct_ft,
-            'timemult':self.dct_tml,
-            'time_code':self.dct_tcd,
-            'tmq_code':self.dct_tmq
+            'header': self.dct_header,
+            'nchannels': self.dct_nchannels,
+            'A': self.dct_analog,
+            'D': self.dct_digital,
+            'line_freq': self.dct_lf,
+            'nrates': self.dct_nrates,
+            'samples': self.dct_samples,
+            'start': self.dct_start,
+            'trigger': self.dct_trigger,
+            'file_type': self.dct_ft,
+            'timemult': self.dct_tml,
+            'time_code': self.dct_tcd,
+            'tmq_code': self.dct_tmq
         }
 
         # Initializing variables
@@ -83,8 +84,8 @@ class ComtradeRecord(object):
         '''
 
         # Resets the variables
-        self.cfg_data = {} # Config data
-        self.bdata = None # Binary file data
+        self.cfg_data = {}  # Config data
+        self.bdata = None   # Binary file data
 
     def cast_data(self, data):
         '''
@@ -126,9 +127,9 @@ class ComtradeRecord(object):
         line = line.rstrip().split(',')
 
         # Parsing, if needed
-        if arg=='nchannels':
-            line[1] = line[1][:-1] # Removing the 'A' letter from the number
-            line[2] = line[2][:-1] # Removing the 'D' letter from the number
+        if arg == 'nchannels':
+            line[1] = line[1][:-1]  # Removing the 'A' letter from the number
+            line[2] = line[2][:-1]  # Removing the 'D' letter from the number
 
         # Casting
         line = [self.cast_data(l) for l in line]
@@ -144,10 +145,10 @@ class ComtradeRecord(object):
         @return station name, recording device id, and standard revision year
         '''
         output = {}
-        output['station_name'] = data[0] # Station name
-        output['rec_dev_id'] = data[1] # Recording device ID
-        if len(data) > 2: # From 1999 revision
-            output['rev_year'] = data[2] # Standard revision year
+        output['station_name'] = data[0]  # Station name
+        output['rec_dev_id'] = data[1]  # Recording device ID
+        if len(data) > 2:  # From 1999 revision
+            output['rev_year'] = data[2]  # Standard revision year
         return output
 
     def dct_nchannels(self, data):
@@ -158,9 +159,9 @@ class ComtradeRecord(object):
         @return number of channels info.
         '''
         output = {}
-        output['TT'] = data[0] # Number of channels (#A+#D)
-        output['#A'] = data[1] # Number of analogic channels
-        output['#D'] = data[2] # Number of analogic channels
+        output['TT'] = data[0]  # Number of channels (#A+#D)
+        output['#A'] = data[1]  # Number of analogic channels
+        output['#D'] = data[2]  # Number of analogic channels
         return output
 
     def dct_analog(self, data):
@@ -174,19 +175,19 @@ class ComtradeRecord(object):
         # Setting initial output and properties string
         output = {}
         dt_str = [
-            'An', # analog channel index number
-            'ch_id', # station_name:channel_name
-            'ph', # channel phase identification (0 to 2)
-            'ccbm', # circuit component being monitored
-            'uu', # channel units
-            'a', # channel multiplier
-            'b', # channel offset
-            'skew', # time skew between channels
-            'min', # data range minimum value
-            'max', # data range maximum value
-            'primary', # PT/CT primary ratio factor
-            'secondary', # PT/CT scondary ratio factor
-            'P_S' # primary or secondary PT/CT scaling identifier. 'P' or 'S'
+            'An',         # analog channel index number
+            'ch_id',      # station_name:channel_name
+            'ph',         # channel phase identification (0 to 2)
+            'ccbm',       # circuit component being monitored
+            'uu',         # channel units
+            'a',          # channel multiplier
+            'b',          # channel offset
+            'skew',       # time skew between channels
+            'min',        # data range minimum value
+            'max',        # data range maximum value
+            'primary',    # PT/CT primary ratio factor
+            'secondary',  # PT/CT scondary ratio factor
+            'P_S'         # primary or secondary PT/CT scaling identifier. 'P' or 'S'
         ]
 
         # For each data property
@@ -210,11 +211,11 @@ class ComtradeRecord(object):
         # Setting initial output and properties string
         output = {}
         dt_str = [
-            'Dn', # Digital channel index
-            'ch_id', # station_name:channel_name
-            'ph', # channel phase identification
-            'ccbm', # circuit component being monitore
-            'y' # normal state of the channel
+            'Dn',     # Digital channel index
+            'ch_id',  # station_name:channel_name
+            'ph',     # channel phase identification
+            'ccbm',   # circuit component being monitore
+            'y'       # normal state of the channel
         ]
 
         # For each data property
@@ -235,7 +236,7 @@ class ComtradeRecord(object):
         @return line frequency.
         '''
         output = {}
-        output['line_freq'] = data[0] # Line frequency in Hz
+        output['line_freq'] = data[0]  # Line frequency in Hz
         return output
 
     def dct_nrates(self, data):
@@ -246,7 +247,7 @@ class ComtradeRecord(object):
         @return number of sampling rates.
         '''
         output = {}
-        output['nrates'] = data[0] # Number of sampling rates in the file
+        output['nrates'] = data[0]  # Number of sampling rates in the file
         return output
 
     def dct_samples(self, data):
@@ -260,8 +261,8 @@ class ComtradeRecord(object):
 
         # For each sample rate
         for i in range(self.cfg_data['nrates']):
-            output['samp'].append(data[0]) # Sample rates
-            output['endsamp'].append(data[1]) # Number of samples
+            output['samp'].append(data[0])     # Sample rates
+            output['endsamp'].append(data[1])  # Number of samples
         return output
 
     def dct_start(self, data):
@@ -272,8 +273,8 @@ class ComtradeRecord(object):
         @return start date/time data.
         '''
         output = {}
-        output['start_date'] = data[0] # Start date
-        output['start_time'] = data[1] # Start time
+        output['start_date'] = data[0]  # Start date
+        output['start_time'] = data[1]  # Start time
         return output
 
     def dct_trigger(self, data):
@@ -284,8 +285,8 @@ class ComtradeRecord(object):
         @return trigger date/time data.
         '''
         output = {}
-        output['trigger_date'] = data[0] # Trigger date
-        output['trigger_time'] = data[1] # Trigger time
+        output['trigger_date'] = data[0]  # Trigger date
+        output['trigger_time'] = data[1]  # Trigger time
         return output
 
     def dct_ft(self, data):
@@ -296,7 +297,7 @@ class ComtradeRecord(object):
         @return file type.
         '''
         output = {}
-        output['file_type'] = data[0] # File type
+        output['file_type'] = data[0]  # File type
         return output
 
     def dct_tml(self, data):
@@ -307,13 +308,13 @@ class ComtradeRecord(object):
         @param time multiplication factor/scale.
         '''
         output = {}
-        output['timemult'] = data[0] # time multiplication factor/scale
+        output['timemult'] = data[0]  # time multiplication factor/scale
         return output
 
-    def dct_tcd(self, data): # TODO
+    def dct_tcd(self, data):  # TODO
         return NotImplementedError
 
-    def dct_tmq(self, data): # TODO
+    def dct_tmq(self, data):  # TODO
         return NotImplementedError
 
     def get_timestamps(self):
@@ -453,7 +454,7 @@ class ComtradeRecord(object):
             bnum = int(np.ceil(cidx/16))
 
             # Digital channel value
-            dchan_val = (1<<(cidx-(bnum-1)*16))
+            dchan_val = (1 << (cidx-(bnum-1)*16))
 
             # Setting initial values
             values = []
@@ -493,7 +494,7 @@ class ComtradeRecord(object):
 
                     # Number of channels
                     nchnn = self.cfg_data['#A']
-                    if arg=='D':
+                    if arg == 'D':
                         nchnn = self.cfg_data['#D']
 
                     # Reading analog/digital  channels
@@ -577,8 +578,8 @@ class ComtradeRecord(object):
 
         # Converting each channel signal into a dictionary
         values = {}
-        values.update({v[c]:v[k] for v in achan})
-        values.update({v[c]:v[k] for v in dchan})
+        values.update({v[c]: v[k] for v in achan})
+        values.update({v[c]: v[k] for v in dchan})
 
         # Saving into dataframe
         values = pd.DataFrame(values, self.get_timestamps().tolist())
