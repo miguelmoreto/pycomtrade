@@ -11,6 +11,6 @@ install:
 script:
   - flake8 --statistics --count
   - coverage run test_comtrade.py
-after_sucess:
+after_success:
 - codecov
 
