@@ -10,6 +10,6 @@ install:
   - pip install requirements/requirements-ci.txt
 script:
   - flake8 --statistics --count
-  - python test_comtrade.py
+  - coverage run test_comtrade.py
 after_sucess:
 - codecov
