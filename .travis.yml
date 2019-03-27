@@ -6,10 +6,11 @@ python:
 install:
   - pip install -U pip
   - pip install -U flake8
-  - pip install requirements/requirements.txt
-  - pip install requirements/requirements-ci.txt
+  - pip install -r requirements/requirements.txt
+  - pip install -r requirements/requirements-ci.txt
 script:
   - flake8 --statistics --count
   - coverage run test_comtrade.py
 after_sucess:
 - codecov
+
