@@ -28,13 +28,17 @@
 # Brazil - 2013
 #
 #
+from __future__ import division
 __version__ = "$Revision$" # SVN revision.
 __date__ = "$Date$" # Date of the last SVN revision.
 import os
+
 import numpy as np
 import struct
 import pandas as pd
 import yaml
+
+from .utils import _unicode
 
 class ComtradeRecord(object):
     """
@@ -106,7 +110,7 @@ class ComtradeRecord(object):
             # boolean
             return data == 'True'
         # A string
-        return unicode(data.decode('utf8'))
+        _unicode(data)
 
     def proc_line(self, line, arg):
         '''
@@ -446,7 +450,7 @@ class ComtradeRecord(object):
         for cidx in range(self.cfg_data['#D']):
 
             # Byte number
-            bnum = int(np.ceil(cidx/16)+1)
+            bnum = int(np.ceil(cidx/16))
 
             # Digital channel value
             dchan_val = (1<<(cidx-(bnum-1)*16))
