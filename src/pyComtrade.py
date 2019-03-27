@@ -110,7 +110,7 @@ class ComtradeRecord(object):
             # boolean
             return data == 'True'
         # A string
-        _unicode(data)
+        return _unicode(data)
 
     def proc_line(self, line, arg):
         '''
