@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#Copyright (c) 2013 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
+# Copyright (c) 2013 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
 
-#This file is part of pyComtrade.
+# This file is part of pyComtrade.
 #
 #    pyComtrade is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -24,15 +24,14 @@ with open('README.md') as file:
     long_description = file.read()
 
 setup(name='pyComtrade',
-        version='0.2.0',
-        description='Python module for reading and writing Comtrade files.',
-        long_description=long_description,
-        author='Miguel Moreto',
-        author_email='moreto@ieee.org',
-        maintainer='Miguel Moreto',
-        maintainer_email='moreto@ieee.org',
-        url='http://code.google.com/p/pycomtrade/',
-        license='GPLv3',
-        packages=['pyComtrade'],
-        package_dir={ 'pyComtrade': 'src' }
-        )
+      version='0.2.0',
+      description='Python module for reading and writing Comtrade files.',
+      long_description=long_description,
+      author='Miguel Moreto',
+      author_email='moreto@ieee.org',
+      maintainer='Miguel Moreto',
+      maintainer_email='moreto@ieee.org',
+      url='http://code.google.com/p/pycomtrade/',
+      license='GPLv3',
+      packages=['pyComtrade'],
+      package_dir={'pyComtrade': 'src'})
