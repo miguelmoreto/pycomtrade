@@ -28,11 +28,17 @@ VC_B69;IN_TF7;IA_TF7;IB_TF7;IC_TF7"
 87UB_G4;87UC_G4;64S_G4;51_G4;46_G4;32_G4"
         self.assertEqual(self.comtradeObj.get_digital_ids(), result)
 
-    def test_numsamples(self):
+    def test_num_samples(self):
         self.assertEqual(self.comtradeObj['endsamp'][-1], 24768)
 
-    def test_samplingrate(self):
+    def test_sampling_rate(self):
         self.assertEqual(self.comtradeObj['samp'][-1], 5760)
+
+
+class TestASCIIComtrade(TestPyComtrade):
+    def setUp(self):
+        self.comtradeObj.read('./examples/test_data3/test3_ascii.cfg',
+                              './examples/test_data3/test3_ascii.dat')
 
 
 if __name__ == '__main__':
