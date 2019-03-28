@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.com/fortes23/pycomtrade.svg?branch=feat_ci)](https://travis-ci.com/fortes23/pycomtrade)
+[![codecov](https://codecov.io/gh/fortes23/pycomtrade/branch/feat_ci/graph/badge.svg)](https://codecov.io/gh/fortes23/pycomtrade)
+[![PyPy Latest version](https://img.shields.io/pypi/v/pycomtrade.svg)](https://pypi.python.org/pypi/pycomtrade)
+[![Requirements Status](https://requires.io/github/fortes23/pycomtrade/requirements.svg?branch=feat_ci)](https://requires.io/github/fortes23/pycomtrade/requirements/?branch=feat_ci)
+
 Description
 ===============
 
