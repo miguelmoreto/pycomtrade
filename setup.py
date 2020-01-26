@@ -18,7 +18,20 @@
 #    along with pyComtrade.  If not, see <http://www.gnu.org/licenses/>.
 # ====================================================================
 
+import os
+
 from distutils.core import setup
+
+
+def parse_requirements():
+    """
+    Reads requirements.txt
+    """
+    with open(os.path.join(os.path.dirname(__file__),
+              "requirements/requirements.txt")) as f:
+        requirements = f.read()
+    return requirements.split('\n')
+
 
 with open('README.md') as file:
     long_description = file.read()
@@ -34,4 +47,5 @@ setup(name='pyComtrade',
       url='http://code.google.com/p/pycomtrade/',
       license='GPLv3',
       packages=['pyComtrade'],
-      package_dir={'pyComtrade': 'src'})
+      package_dir={'pyComtrade': 'src'},
+      install_requires=parse_requirements())
