@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.com/fortes23/pycomtrade.svg?branch=feat_ci)](https://travis-ci.com/fortes23/pycomtrade)
+[![codecov](https://codecov.io/gh/fortes23/pycomtrade/branch/feat_ci/graph/badge.svg)](https://codecov.io/gh/fortes23/pycomtrade)
+[![PyPy Latest version](https://img.shields.io/pypi/v/pycomtrade.svg)](https://pypi.python.org/pypi/pycomtrade)
+[![Requirements Status](https://requires.io/github/fortes23/pycomtrade/requirements.svg?branch=feat_ci)](https://requires.io/github/fortes23/pycomtrade/requirements/?branch=feat_ci)
+
 Description
 ===============
 
@@ -5,14 +10,13 @@ pyComtrade is a python module that provides you a transparent way for reading an
 
 Comtrade stands for COMmon format for Transient Data Exchange for power systems. It is a file format standardised by the IEEE that is used to store transient signals from Digital Fault Recorders, Oscillographs or Digital Protective Relays.
 
-pyContrade was created and maintained by Miguel Moreto at Federal University of Santa Catarina - Brazil
+pyComtrade was created and maintained by Miguel Moreto at Federal University of Santa Catarina - Brazil
 
 
 Feel free to use the module in your program. Don't forget that pyComtrade is licensed under the GNU version 3 license. For more info about this read the *COPYING.txt*.
 
 Release Notes
 ===============
-
 
 * Version 0.2.0
 
@@ -44,7 +48,7 @@ From source (windows and linux)
 
 Extract the source .zip file.
 
-Run::
+Run:
 
     python.exe setup.py install
 
