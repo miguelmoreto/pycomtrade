@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#Copyright (c) 2010 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
+# Copyright (c) 2010 Miguel Moreto <http://sites.google.com/site/miguelmoreto/>
 
-#This file is part of pyComtrade.
+# This file is part of pyComtrade.
 #
 #    pyComtrade is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -20,8 +20,10 @@
 """
 Initialize the pyComtrade module.
 """
-__version__ = "$Revision$" # SVN revision.
-__date__ = "$Date$" # Date of the last SVN revision.
+__version__ = "$Revision$"  # SVN revision.
+__date__ = "$Date$"         # Date of the last SVN revision.
 
 # Load the main functions of pyComtrade.py:
-from pyComtrade import *
+from .pyComtrade import ComtradeRecord
+
+__all__ = ['ComtradeRecord']
