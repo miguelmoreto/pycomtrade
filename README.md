@@ -6,7 +6,7 @@
 Description
 ===============
 
-pyComtrade is a python module that provides you a transparent way for reading and writing oscillographic files stored in IEEE Comtrade format.
+pyComtrade is a python module that provides you a transparent way for reading and writing (not implemented yet) oscillographic files stored in IEEE Comtrade format.
 
 Comtrade stands for COMmon format for Transient Data Exchange for power systems. It is a file format standardised by the IEEE that is used to store transient signals from Digital Fault Recorders, Oscillographs or Digital Protective Relays.
 
@@ -34,6 +34,7 @@ To Do
 
 * Read ASCII Comtrade Files (only binary for now)
 * Review the last version of Comtrade Standard C37.111-2013.
+* Write Comtrade files.
 
 Install
 ===============
