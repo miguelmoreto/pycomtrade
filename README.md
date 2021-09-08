@@ -12,11 +12,17 @@ Comtrade stands for COMmon format for Transient Data Exchange for power systems.
 
 pyComtrade was created and maintained by Miguel Moreto at Federal University of Santa Catarina - Brazil
 
-
 Feel free to use the module in your program. Don't forget that pyComtrade is licensed under the GNU version 3 license. For more info about this read the *COPYING.txt*.
 
 Release Notes
 ===============
+* Version 0.3.0
+  - Added ASCII data file support.
+  - Source code refactored.
+  - Changed metadata handling from lists to dictionaries.
+  - Python 3 support.
+
+  Many thanks to the contributors @ldemattos and @bluesdog164 who made most of the changes for this release.
 
 * Version 0.2.0
 
@@ -32,17 +38,17 @@ Release Notes
 To Do
 ===============
 
-* Read ASCII Comtrade Files (only binary for now)
 * Review the last version of Comtrade Standard C37.111-2013.
 * Write Comtrade files.
 
 Install
 ===============
 
-Binaries
+Pip
 ---------------
 
-Use the executables (win32 or win64). The binaries was generated for Python 2.7. If you have different version, install from source.
+Run pip install pyComtrade from the command line.
+
 
 From source (windows and linux)
 -------------------------------

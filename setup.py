@@ -20,7 +20,7 @@
 
 import os
 
-from distutils.core import setup
+from setuptools import setup
 
 
 def parse_requirements():
@@ -37,14 +37,14 @@ with open('README.md') as file:
     long_description = file.read()
 
 setup(name='pyComtrade',
-      version='0.2.0',
-      description='Python module for reading and writing Comtrade files.',
+      version='0.3.0',
+      description='Python module for reading Comtrade files.',
       long_description=long_description,
       author='Miguel Moreto',
-      author_email='moreto@ieee.org',
+      author_email='miguel.moreto@ufsc.br',
       maintainer='Miguel Moreto',
-      maintainer_email='moreto@ieee.org',
-      url='http://code.google.com/p/pycomtrade/',
+      maintainer_email='miguel.moreto@ufsc.br',
+      url='https://github.com/miguelmoreto/pycomtrade',
       license='GPLv3',
       packages=['pyComtrade'],
       package_dir={'pyComtrade': 'src'},
