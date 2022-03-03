@@ -37,7 +37,7 @@ with open('README.md') as file:
     long_description = file.read()
 
 setup(name='pyComtrade',
-      version='0.3.0',
+      version='0.3.1',
       description='Python module for reading Comtrade files.',
       long_description=long_description,
       author='Miguel Moreto',
