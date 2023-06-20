@@ -1,0 +1,39 @@
+name: pre-commit
+
+on:
+  pull_request:
+    branches:
+      - master
+      - staging
+    types:
+      - opened
+      - reopened
+      - ready_for_review
+      - synchronize
+
+env:
+  SKIP: pytest-check
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0 # get full git history
+    - uses: actions/setup-python@v3
+      with:
+        cache: 'pip'
+    - name: Install pre-commit
+      run: |
+        pip install pre-commit
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v21
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run pre-commit
+      uses: pre-commit/action@v2.0.3
+      with:
+        extra_args: --files ${{ steps.changed-files.outputs.all_changed_files }}

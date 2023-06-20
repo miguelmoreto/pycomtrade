@@ -85,3 +85,10 @@ target/
 
 # File system trash
 .DS_Store
+*.pyc
+build/
+dist/
+pyComtrade.egg-info/
+
+.idea/
+venv/

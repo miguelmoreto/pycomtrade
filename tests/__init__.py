@@ -23,8 +23,8 @@ import unittest
 # Classes
 ##########################################################################
 
-class InitializationTests(unittest.TestCase):
 
+class InitializationTests(unittest.TestCase):
     def test_initialization(self):
         """
         Check the test suite runs by affirming 2+2=4
@@ -45,5 +45,5 @@ class InitializationTests(unittest.TestCase):
 # Execution
 ##########################################################################
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

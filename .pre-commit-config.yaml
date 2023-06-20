@@ -1,0 +1,35 @@
+repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
+  hooks:
+    - id: check-yaml
+    - id: end-of-file-fixer
+    - id: trailing-whitespace
+      exclude: ^(setup.cfg|btrdb/grpcinterface)
+- repo: https://github.com/psf/black
+  rev: 23.3.0
+  hooks:
+    - id: black-jupyter
+      args: [--line-length=88]
+      exclude: btrdb/grpcinterface/.*\.py
+- repo: https://github.com/pycqa/isort
+  rev: 5.11.5
+  hooks:
+    - id: isort
+      name: isort (python)
+      args: [--profile=black, --line-length=88]
+      exclude: btrdb/grpcinterface/.*\.py
+- repo: https://github.com/PyCQA/flake8
+  rev: 6.0.0
+  hooks:
+  - id: flake8
+    args: [--config=.flake8]
+    exclude: ^(btrdb/grpcinterface|tests|setup.py|btrdb4|docs|benchmarks)
+#- repo: local
+#  hooks:
+#    - id: pytest-check
+#      name: pytest-check
+#      entry: pytest
+#      language: system
+#      pass_filenames: false
+#      always_run: true
